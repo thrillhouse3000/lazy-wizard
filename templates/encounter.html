@@ -5,82 +5,69 @@
 {% block content %}
 <div class="container text-center">
     <div class="row">
-        <div class="col" id="tips-col"></div>
-        <div class="col-8" id="main-col">
-            <div class="row" id="party-row">
-                <div class="col">
-                    <form id="pc-lvl-form">
-                        <label for="pc-lvl">Player Level:</label>
-                        <select name="pc-lvl" id="pc-lvl">
-                            {% for n in range(1,21) %}
-                                <option value="{{n}}">{{n}}</option>
-                            {% endfor %}
-                        </select>
-                        <button class="btn btn-sm btn-success">Add Player</button>
-                    </form>
-                    <div id="party"></div>
+        <div class="col-4">
+            <h4>1) Create your party:</h4>
+            <form class='mb-2' id="pc-lvl-form">
+                <label for="pc-lvl">Player Level:</label>
+                <select name="pc-lvl" id="pc-lvl">
+                    {% for n in range(1,21) %}
+                        <option value="{{n}}">{{n}}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-sm btn-success">Add Player</button>
+            </form>
+            <div id="party"></div>
+        </div>
+        <div class="col-4">
+            <h4>2) Select Encounter Parameters:</h4>
+            <form id="parameters-form" method="POST">
+                <div>
+                    <label for="enc-difficulty" class="form-label">Encounter Difficulty:</label>
+                    <select name="enc-difficulty" id="enc-difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="deadly">Deadly</option>
+                    </select>
                 </div>
-                <div class="col">
-                    <p id="easy-total">Easy: </p>
-                    <p id="medium-total">Medium: </p>
-                    <p id="hard-total">Hard: </p>
-                    <p id="deadly-total">Deadly: </p>
+                <div>
+                    <label for="density" class="form-label">Monster Density:</label>
+                    <select name="density" id="density">
+                        <option value="one">One</option>
+                        <option value="few">Few</option>
+                        <option value="many">Many</option>
+                        <option value="horde">Horde</option>
+                    </select>
                 </div>
-            </div>
-            <div class="row" id="monster-add-row">
-                <div class="col">
-                    <form id="monster-add-form" method="POST">
-                        <label for="name" class="form-label">Monster Name:</label>
-                        <input type="text" name="name" id="monster-name">
-                        <button class="btn btn-sm btn-success">Add Monster</button>
-                    </form>
+                <div>
+                    <label for="type" class="form-label">Monster Type:</label>
+                    <select name="type" id="type">
+                        {% for c in creature_types %}
+                            <option value="{{c}}">{{c|capitalize}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-            </div>
-            <div class="row" id="parameters-row">
-                <div class="col">
-                    <form id="parameters-form" method="POST">
-                        <label for="enc-difficulty" class="form-label">Encounter Difficulty:</label>
-                        <select name="enc-difficulty" id="enc-difficulty">
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
-                            <option value="deadly">Deadly</option>
-                        </select>
-                        <label for="density" class="form-label">Monster Density:</label>
-                        <select name="density" id="density">
-                            <option value="one">One</option>
-                            <option value="few">Few</option>
-                            <option value="many">Many</option>
-                            <option value="horde">Horde</option>
-                        </select>
-                        <label for="type" class="form-label">Monster Type:</label>
-                        <select name="type" id="type">
-                            {% for c in creature_types %}
-                                <option value="{{c}}">{{c|capitalize}}</option>
-                            {% endfor %}
-                        </select>
-                        <label for="terrain" class="form-label">Terrain:</label>
-                        <select name="terrain" id="terrain">
-                            {% for t in terrain_types %}
-                                <option value="{{t}}">{{t|capitalize}}</option>
-                            {% endfor %}
-                        </select>
-                        <div>
-                            <button class="btn btn-sm btn-success">Generate Encounter</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="row mt-3" id="monster-row">
-                <div class="col text-start" id="monster-section">
-                </div>
-            </div>
+            </form>
+        </div>
+        <div class="col-4">
+            <h4>3) Add Monsters or Generate an Encounter:</h4>
+            <form id="monster-add-form" method="POST">
+                <label for="name" class="form-label">Monster Name:</label>
+                <input type="text" name="name" id="monster-name">
+                <button class="btn btn-sm btn-success">Add Monster</button>
+            </form>
+            <input type='submit' form='parameters-form' class="btn btn-sm btn-success" value='Generate Random Encounter'/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" id="main-col">
+            <div class="col text-start mt-2" id="monster-section"></div>
         </div>  
-        <div class="col" id="terrain-col"></div>
     </div>
 </div>
 
 <script src="/static/scripts/resources.js"></script>
+<script src="/static/scripts/helpers.js"></script>
 <script src="/static/scripts/encounterScripts.js"></script>
 <script>
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

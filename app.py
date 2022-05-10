@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, redirect, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db
 import random
+from collections import Counter
 import requests
 import resources
 # from forms import
@@ -42,14 +43,16 @@ def generate_encounter():
     difficulty = data['difficulty']
     density = data['density']
     type = data['type']
-    terrain = data['terrain']
 
     crs = resources.convert_xp_to_cr(difficulty, density)
+    counter = Counter()
+    for cr in crs:
+        counter[cr] += 1
     set_crs = set(crs)
     ordered = sorted(set_crs, reverse=True)
     monsters = {}
 
-    for i, cr in enumerate(ordered):
+    for cr in ordered:
         payload = {}
         payload['challenge_rating'] = str(cr)
         if type != 'any':
@@ -57,9 +60,12 @@ def generate_encounter():
         res = requests.get('https://api.open5e.com/monsters/', params=payload)
         json = res.json()
         monster = random.choice(json['results'])
-        monsters[f"{i}"] = monster
+        if monsters.get(f"{monster['name']}") == None:
+            monsters[f"{monster['name']}"] = {}
+            monsters[f"{monster['name']}"]["count"] = counter[cr]
+            monsters[f"{monster['name']}"]["data"] = monster
 
-    return jsonify(monsters)
+    return jsonify(monsters=monsters)
 
 @app.route('/encounter/spells', methods=['POST'])
 def get_spells():
