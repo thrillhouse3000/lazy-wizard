@@ -9,34 +9,41 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
-#MODELS go below
-# class Table_Name(singular)(db.Model):
-#     __tablename__ = 'table_name(s)'
-#
-#     @classmethods go here
-#
-#     def __repr__(self):
-#         s = self
-#         return f"<Table_Name id={s.id} col1={s.col1} col2={s.col2}"
-#
-#     id = db.Column(
-#         db.Integer,
-#         primary_key=True,
-#         autoincrement=True
-#     )
-#
-#     col1_name = db.Column(
-#         db.String(50),
-#         nullable=False,
-#         unique=True,
-#         default=X
-#     )
-#
-#     col2_name = db.Column(
-#         db.Data_type,
-#         arg1,
-#         arg2,
-#         etc...
-#     )
-#
-#     def custom_method(self): 
+class User(db.Model):
+
+    __tablename__ = 'users'
+
+    @classmethod
+    def register (cls, username, password, email):
+        """hash users password"""
+        hashed = bcrypt.generate_password_hash(password)
+        hashed_utf8 = hashed.decode('utf8')
+        return cls(username=username, password=hashed_utf8, email=email)
+    
+    @classmethod
+    def authenticate (cls, username, password):
+        """check for correct password"""
+        user = User.query.filter_by(username=username).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            return user
+        else:
+            return False
+
+    username = db.Column(
+        db.String(20),
+        primary_key=True,
+        unique=True,
+        nullable=False
+    )
+
+    password = db.Column(
+        db.String,
+        nullable=False
+    )
+
+    email = db.Column(
+        db.String(50),
+        unique=True,
+        nullable=False
+    )

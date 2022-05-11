@@ -43,15 +43,15 @@ function removeCharacter(evt) {
 $('#pc-lvl-form').on('submit', pcLvlSubmit)
 $('#party').on('click','.party-icon', removeCharacter)
 
-async function processAddForm(evt) {
+async function processNameAddForm(evt) {
     evt.preventDefault()
 
     let name = $('#monster-name').val()
+    let data = {name: name}
+    let resp = await axios.post('/encounter/add-name', data)
+    let monster = resp.data[0]
 
-    if (Object.keys(monsterTracker).indexOf(name) === -1) {
-        let data = {name: name}
-        let resp = await axios.post('/encounter/add', data)
-        let monster = resp.data[0]
+    if (Object.keys(monsterTracker).indexOf(name) === -1) {    
         monsterTracker[`${monster.name}`] = {}
         monsterTracker[`${monster.name}`]['count'] = 1
         monsterTracker[`${monster.name}`]['data'] = monster
@@ -62,10 +62,33 @@ async function processAddForm(evt) {
         getTitle(monsterTracker[`${name}`]['count'], i)
         getHp(monsterTracker[`${name}`]['data'].hit_points, monsterTracker[`${name}`]['count'], i)
     }
-    
 }
 
-$('#monster-add-form').on('submit', processAddForm)
+$('#monster-name-add-form').on('submit', processNameAddForm)
+
+async function processCrAddForm(evt) {
+    evt.preventDefault()
+
+    let cr = $('#monster-cr').val()
+    let data = {challenge_rating: cr}
+    resp = await axios.post('/encounter/add-cr', data)
+    let monster = resp.data
+    let name = monster.name
+
+    if (Object.keys(monsterTracker).indexOf(name) === -1) {
+        monsterTracker[`${monster.name}`] = {}
+        monsterTracker[`${monster.name}`]['count'] = 1
+        monsterTracker[`${monster.name}`]['data'] = monster
+        appendMonster(monster)
+    } else {
+        monsterTracker[`${name}`]['count'] += 1
+        i = $(`h5:contains(${name})`).data('id')
+        getTitle(monsterTracker[`${name}`]['count'], i)
+        getHp(monsterTracker[`${name}`]['data'].hit_points, monsterTracker[`${name}`]['count'], i)
+    }
+}
+
+$('#monster-cr-add-form').on('submit', processCrAddForm)
 
 async function processParametersForm(evt) {
     evt.preventDefault()

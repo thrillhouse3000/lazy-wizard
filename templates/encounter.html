@@ -51,10 +51,15 @@
         </div>
         <div class="col-4">
             <h4>3) Add Monsters or Generate an Encounter:</h4>
-            <form id="monster-add-form" method="POST">
-                <label for="name" class="form-label">Monster Name:</label>
+            <form id="monster-name-add-form" method="POST">
+                <label for="name" class="form-label">Monster by Name:</label>
                 <input type="text" name="name" id="monster-name">
-                <button class="btn btn-sm btn-success">Add Monster</button>
+                <button class="btn btn-sm btn-success">Add</button>
+            </form>
+            <form id="monster-cr-add-form" method="POST">
+                <label for="cr" class="form-label">Monster by CR:</label>
+                <input type="text" name="cr" id="monster-cr">
+                <button class="btn btn-sm btn-success">Add</button>
             </form>
             <input type='submit' form='parameters-form' class="btn btn-sm btn-success" value='Generate Random Encounter'/>
         </div>

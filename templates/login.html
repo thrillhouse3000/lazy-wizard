@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="container d-flex flex-column vh-100 justify-content-center align-items-center">
+            <div class="card text-center" style="width: 30rem; height: 20rem;">
+                <form action="/login" method="POST" id="login-form">
+                    <h4>Sign In</h4>
+                    {% include 'form_logic.html' %}
+                    <button class="btn btn-success mt-3">Log In</button>
+                </form>
+            </div>  
+    </div>
+{% endblock %}

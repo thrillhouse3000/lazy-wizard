@@ -22,3 +22,15 @@
     border: 1px solid black;
     border-radius: 2px;
 }
+
+.success {
+    text-align: center;
+    color: white;
+    background-color: green;
+}
+
+.logout-btn {
+    color: rgba(255,255,255,.55);
+    text-decoration: none;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+}
