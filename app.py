@@ -83,6 +83,19 @@ def home_page():
     creature_types = resources.creature_types
     return render_template('encounter.html', creature_types=creature_types)
 
+@app.route('/encounter/calc-crs', methods=["POST"])
+def calculate_crs():
+    data = request.json
+    difficulty = data['difficulty']
+    density = data['density']
+
+    crs = resources.convert_xp_to_cr(difficulty, density)
+    counter = Counter()
+    for cr in crs:
+        counter[cr] += 1
+    return jsonify(counter)
+
+
 @app.route('/encounter/add-name', methods=['POST'])
 def add_monster_name():
     data = request.json
@@ -94,25 +107,30 @@ def add_monster_name():
     monster = json['results']
     return jsonify(monster)
 
-@app.route('/encounter/add-cr', methods=['POST'])
+@app.route('/encounter/search', methods=['POST'])
 def add_monster_cr():
     data = request.json
     cr = data['challenge_rating']
-    payload = {'challenge_rating': str(cr)}
+    type = data['type']
+
+    if type == 'any':
+        payload = {'challenge_rating': str(cr)}
+    elif cr == '':
+        payload = {'type': str(type)}
+    else:
+        payload = {'challenge_rating': str(cr), 'type': str(type)}
 
     res = requests.get('https://api.open5e.com/monsters/', params=payload)
     json = res.json()
     results = json['results']
     get_next(json, results)
-    monster = random.choice(results)
-    return jsonify(monster)
+    return jsonify(results)
 
-@app.route('/encounter/create', methods=["POST"])
+@app.route('/encounter/generate', methods=["POST"])
 def generate_encounter():
     data = request.json
     difficulty = data['difficulty']
     density = data['density']
-    type = data['type']
 
     crs = resources.convert_xp_to_cr(difficulty, density)
     counter = Counter()
@@ -125,16 +143,15 @@ def generate_encounter():
     for cr in ordered:
         payload = {}
         payload['challenge_rating'] = str(cr)
-        if type != 'any':
-             payload['type'] = type
         res = requests.get('https://api.open5e.com/monsters/', params=payload)
         json = res.json()
         results = json['results']
         get_next(json, results)
         monster = random.choice(results)
-        monsters[f"{monster['name']}"] = {}
-        monsters[f"{monster['name']}"]["count"] = counter[cr]
-        monsters[f"{monster['name']}"]["data"] = monster
+        monsters[f"{monster['slug']}"] = {}
+        monsters[f"{monster['slug']}"]["count"] = counter[cr]
+        monsters[f"{monster['slug']}"]["name"] = monster['name']
+        monsters[f"{monster['slug']}"]["data"] = monster
 
     return jsonify(monsters=monsters)
 

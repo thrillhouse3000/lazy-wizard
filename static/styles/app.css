@@ -1,5 +1,13 @@
-.card {
-    font-size: normal;
+body {
+    font-size: small;
+}
+
+.vh-5 {
+    height: 5vh;
+}
+
+.vh-90 {
+    height: 90vh;
 }
 
 .card .row {
@@ -34,3 +42,28 @@
     text-decoration: none;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
 }
+
+#search-section {
+    text-align: start;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    max-height: 55vh;
+}
+
+#search-section li {
+    border: 1px solid black;
+    transition: background-color 0.3s;
+}
+
+#search-section li:hover {
+    background-color: rgba(0, 0, 0, 0.341);
+}
+
+#monster-section {
+    max-height: 69vh;
+    overflow: auto;
+    overflow-x: hidden;
+}
+

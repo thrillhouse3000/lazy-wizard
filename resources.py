@@ -67,16 +67,19 @@ def calc_crs(xp, mod, limit):
     n = 1
     m = mod
     while i < len(cr_list):
-        if n <= limit and (xp * m) - (cr_list[i][1] * num_of_monsters[str(n)]) >= 0:
-            if cr_list[i][0] > 0 and cr_list[i][0] < 1:
-                crs.append(str(Fraction(cr_list[i][0])))
-                xp -= (cr_list[i][1] * num_of_monsters[str(n)])
+        cr = cr_list[i][0]
+        exp_val = cr_list[i][1]
+        multiplier = num_of_monsters[str(n)]
+        if n <= limit and (xp * m) - (exp_val * multiplier) >= 0:
+            if cr > 0 and cr < 1:
+                crs.append(str(Fraction(cr)))
+                xp -= (exp_val * multiplier)
                 m += mod
                 n += 1
                 i -= 1
             else:
-                crs.append(str(cr_list[i][0]))    
-                xp -= (cr_list[i][1] * num_of_monsters[str(n)])
+                crs.append(str(cr))    
+                xp -= (exp_val * multiplier)
                 m += mod
                 n += 1
                 i -= 1

@@ -2,6 +2,7 @@ let easyTotal = 0;
 let mediumTotal = 0;
 let hardTotal = 0;
 let deadlyTotal = 0;
+let searchResults = {};
 let monsterTracker = {};
 
 function pcLvlSubmit(evt) {
@@ -49,46 +50,63 @@ async function processNameAddForm(evt) {
     let name = $('#monster-name').val()
     let data = {name: name}
     let resp = await axios.post('/encounter/add-name', data)
-    let monster = resp.data[0]
-
-    if (Object.keys(monsterTracker).indexOf(name) === -1) {    
-        monsterTracker[`${monster.name}`] = {}
-        monsterTracker[`${monster.name}`]['count'] = 1
-        monsterTracker[`${monster.name}`]['data'] = monster
-        appendMonster(monster)
-    } else {
-        monsterTracker[`${name}`]['count'] += 1
-        i = $(`h5:contains(${name})`).data('id')
-        getTitle(monsterTracker[`${name}`]['count'], i)
-        getHp(monsterTracker[`${name}`]['data'].hit_points, monsterTracker[`${name}`]['count'], i)
-    }
+    monster = resp.data[0]
+    trackAndAppend(monster)
 }
 
 $('#monster-name-add-form').on('submit', processNameAddForm)
 
-async function processCrAddForm(evt) {
+async function processSearchForm(evt) {
     evt.preventDefault()
 
     let cr = $('#monster-cr').val()
-    let data = {challenge_rating: cr}
-    resp = await axios.post('/encounter/add-cr', data)
-    let monster = resp.data
-    let name = monster.name
+    let type = $('#monster-type').val()
+    let data = {challenge_rating: cr, type: type}
+    let resp = await axios.post('/encounter/search', data)
+    searchResults = {...resp.data}
+    populateSearchList(resp)
+}
 
-    if (Object.keys(monsterTracker).indexOf(name) === -1) {
-        monsterTracker[`${monster.name}`] = {}
-        monsterTracker[`${monster.name}`]['count'] = 1
-        monsterTracker[`${monster.name}`]['data'] = monster
-        appendMonster(monster)
-    } else {
-        monsterTracker[`${name}`]['count'] += 1
-        i = $(`h5:contains(${name})`).data('id')
-        getTitle(monsterTracker[`${name}`]['count'], i)
-        getHp(monsterTracker[`${name}`]['data'].hit_points, monsterTracker[`${name}`]['count'], i)
+function populateSearchList(resp) {
+    $('#search-section').empty()
+
+    for (let i = 0; i < resp.data.length; i++) {
+        let monster = resp.data[i]
+        let el = `<li class='p-2' data-slug='${monster.slug}'>${monster.name} - CR ${monster.challenge_rating}</li>`
+        $('#search-section').append(el)
     }
 }
 
-$('#monster-cr-add-form').on('submit', processCrAddForm)
+function addFromSearch(evt) {
+    let slug = $(evt.target).data('slug')
+    let monster = {}
+
+    for (let i in searchResults) {
+        if (searchResults[i].slug === slug) {
+            monster = {...searchResults[i]}
+        }
+    }
+    trackAndAppend(monster)
+}
+
+$('#monster-search-form').on('submit', processSearchForm)
+$('#search-section').on('click', 'li', addFromSearch)
+
+function trackAndAppend(monster) {
+    if (Object.keys(monsterTracker).indexOf(`${monster.slug}`) === -1) {    
+        monsterTracker[`${monster.slug}`] = {}
+        monsterTracker[`${monster.slug}`]['count'] = 1
+        monsterTracker[`${monster.slug}`]['name'] = monster.name
+        monsterTracker[`${monster.slug}`]['data'] = monster
+        appendMonster(monster)
+    } else {
+        monsterTracker[`${monster.slug}`]['count'] += 1
+        i = $(`h6:contains(${monster.name})`).data('id')
+        getTitle(monsterTracker[`${monster.slug}`]['count'], i)
+        getHp(monsterTracker[`${monster.slug}`]['data'].hit_points, monsterTracker[`${monster.slug}`]['count'], i)
+    }
+    
+}
 
 async function processParametersForm(evt) {
     evt.preventDefault()
@@ -106,36 +124,69 @@ async function processParametersForm(evt) {
     }
 
     let density = $('#density').val()
-    let type = $('#type').val()
-    let terrain  = $('#terrain').val()
 
     let data = {
         difficulty: difficulty,
         density: density,
-        type: type,
-        terrain: terrain
     }
 
-    let resp = await axios.post('/encounter/create', data)
+    let resp = await axios.post('/encounter/generate', data)
     let monsters = resp.data.monsters
     monsterTracker = {...monsters}
     clearMonsters()
     appendMonsters(monsters)
 }
 
+async function updateCrs() {
+    let selected = $('#enc-difficulty').val()
+
+    let difficulty = 0
+    if (selected === 'easy') {
+        difficulty = easyTotal
+    } else if (selected === 'medium') {
+        difficulty = mediumTotal
+    } else if (selected === 'hard') {
+        difficulty = hardTotal
+    } else {
+        difficulty = deadlyTotal
+    }
+
+    let density = $('#density').val()
+
+    let data = {
+        difficulty: difficulty,
+        density: density,
+    }
+
+    let resp = await axios.post('/encounter/calc-crs', data)
+    let crCounter = resp.data
+    printCrs(crCounter)
+}
+
+function printCrs(crCounter) {
+    let el = $('#cr-section')
+    el.empty()
+    for (cr in crCounter) {
+        el.append(` (<b>${crCounter[cr]}x CR-${cr}</b>) `)
+    }
+}
+
 $('#parameters-form').on('submit', processParametersForm)
+$('#enc-difficulty').on('change', updateCrs)
+$('#density').on('change', updateCrs)
 
 function removeMonster(evt) {
     let el = $(evt.target).parent()
-    let monsterName = el.find('h5').text()
+    let slug = el.data('slug')
+    let monster = monsterTracker[slug]['data']
 
-    if (monsterTracker[monsterName]['count'] > 1) {
-        monsterTracker[monsterName]['count'] -= 1
-        i = $(`h5:contains(${monsterName})`).data('id')
-        getTitle(monsterTracker[monsterName]['count'], i)
-        getHp(monsterTracker[monsterName]['data'].hit_points, monsterTracker[monsterName]['count'], i)
+    if (monsterTracker[slug]['count'] > 1) {
+        monsterTracker[slug]['count'] -= 1
+        i = $(`h6:contains(${monster.name})`).data('id')
+        getTitle(monsterTracker[slug]['count'], i)
+        getHp(monsterTracker[slug]['data'].hit_points, monsterTracker[slug]['count'], i)
     } else {
-        delete monsterTracker[monsterName]
+        delete monsterTracker[slug]
         el.remove()
     }
 }

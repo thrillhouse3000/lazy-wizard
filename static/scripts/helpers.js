@@ -1,10 +1,10 @@
 function generateHtml(monster, i) {
-    return `<div class="card mb-3">
+    return `<div class="card mb-3" data-slug='${monster.slug}'>
         <button class='me-0 btn btn-sm btn-danger delete-btn'>X</button>
         <div class="row" id='title-row'>
             <div class="col">
                 <div class="card-body">
-                    <h5 class="card-text d-inline" id='monster-name-${i}' data-id='${i}'>${monster.name}</h5>
+                    <h6 class="card-text d-inline" id='monster-name-${i}' data-id='${i}'>${monster.name}</h6>
                     <span id='monster-multiplier-${i}'></span>
                 </div>
             </div>
@@ -76,8 +76,8 @@ function appendMonster(monster) {
 }
 
 function getStats(monster, i) {
-    getTitle(monsterTracker[`${monster.name}`]['count'], i)
-    getHp(monster.hit_points, monsterTracker[`${monster.name}`]['count'], i)
+    getTitle(monsterTracker[`${monster.slug}`]['count'], i)
+    getHp(monster.hit_points, monsterTracker[`${monster.slug}`]['count'], i)
     getActions(monster.actions, i)
     getReactions(monster.reactions, i)
     getLegendaryActions(monster.legendary_actions, i)
@@ -156,28 +156,28 @@ function getSkills(monsters) {
 
 function getActions(monsters, i) {
     for (let action in monsters) {
-        let el = `<a href="#" class='mx-2' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
+        let el = `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
         $(`#actions-${i}`).append(el)
     }
 }
 
 function getReactions(monsters, i) {
     for (let action in monsters) {
-        let el = `<a href="#" class='mx-2' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
+        let el = `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
         $(`#reactions-${i}`).append(el)
     }
 }
 
 function getLegendaryActions(monsters, i) {
     for (let action in monsters) {
-        let el = `<a href="#" class='mx-2' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
+        let el = `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
         $(`#legendary-actions-${i}`).append(el)
     }
 }
 
 function getSpecialAbilities(monsters, i) {
     for (let ability in monsters) {
-        let el = `<a href="#" class='mx-2' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[ability]['desc']}">${monsters[ability]['name']}</a>`
+        let el = `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[ability]['desc']}">${monsters[ability]['name']}</a>`
         $(`#special-abilities-${i}`).append(el)
     }
 }
@@ -188,13 +188,13 @@ async function getSpells(monsters, i) {
         for (let j = 0; j < monsters.length; j++) {
             data[`${j}`] = monsters[j]
         }
-        resp = await axios.post('/encounter/spells', data)
+        let resp = await axios.post('/encounter/spells', data)
         appendSpells(resp.data, i)
     }
 }
 
 function generateSpellHtml(spell) {
-    return `<a href="#" class='mx-2' data-bs-toggle="tooltip" data-bs-placement="top" title="${spell.desc}">${spell.name}</a>`
+    return `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${spell.desc}">${spell.name}</a>`
 }
 
 function appendSpells(monsters, i) {
