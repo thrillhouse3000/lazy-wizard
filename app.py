@@ -1,7 +1,7 @@
-from flask import Flask, request, render_template, redirect, flash, session, jsonify
+from flask import Flask, request, render_template, redirect, flash, session, jsonify, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
-from models import db, connect_db, User
+from models import db, connect_db, User, Encounter
 import random
 from collections import Counter
 import requests
@@ -10,7 +10,7 @@ from forms import RegisterForm, LoginForm
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///encgen'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///lazy_wizard'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'secretsecret'
@@ -61,7 +61,7 @@ def handle_login():
             if user:
                 flash(f'Welcome back {user.username}!', 'success')
                 session['user_id'] = user.username
-                return redirect('/encounter')
+                return redirect(f'/users/{user.username}')
             else:
                 form.username.errors = ['Invalid Username/Password.']
         return render_template('login.html', form=form)
@@ -73,15 +73,20 @@ def handle_logout():
     flash('Successfully logged out!', 'success')
     return redirect('/')
 
+@app.route('/users/<username>')
+def show_user_details(username):
+    user = User.query.get_or_404(username)
+    return render_template('user_details.html', user=user)
+
 
 ##Encounter Routes
 
 
 @app.route('/encounter')
-def home_page():
+def encounter_builder():
     """Show home page"""
     creature_types = resources.creature_types
-    return render_template('encounter.html', creature_types=creature_types)
+    return render_template('encounter_builder.html', creature_types=creature_types)
 
 @app.route('/encounter/calc-crs', methods=["POST"])
 def calculate_crs():
@@ -166,6 +171,41 @@ def get_spells():
         spells[f"{i}"] = spell
     
     return jsonify(spells)
+
+@app.route('/encounter/create', methods=["GET", "POST"])
+def save_encounter():
+    data = request.json
+    title = data['title']
+    monsters = data['monsters']
+    username = session['user_id']
+    new_encounter = Encounter(title=title, monsters=monsters, username=username)
+    db.session.add(new_encounter)
+    db.session.commit()
+    flash('Encounter saved!', 'success')
+    return redirect(url_for('show_user_details', username=username))
+
+@app.route('/encounter/<int:encounter_id>', methods=['GET', 'POST'])
+def show_encounter(encounter_id):
+    if request.method == 'GET':
+        encounter = Encounter.query.get_or_404(encounter_id)
+        creature_types = resources.creature_types
+        return render_template('encounter_details.html', encounter=encounter, creature_types=creature_types)
+    else:
+        encounter = Encounter.query.get_or_404(encounter_id)
+        monsters = encounter.monsters
+        return jsonify(monsters)
+
+@app.route('/encounter/<int:encounter_id>/update', methods=['POST'])
+def update_encounter(encounter_id):
+    data = request.json
+    encounter = Encounter.query.get_or_404(encounter_id)
+    encounter.monsters = data['monsters']
+    db.session.commit()
+    flash('Encounter updated!', 'success')
+    return redirect(url_for('show_user_details', username=session['user_id']))
+
+## Route Functions
+
 
 def get_next(json_response, results):
     if (json_response['next']):

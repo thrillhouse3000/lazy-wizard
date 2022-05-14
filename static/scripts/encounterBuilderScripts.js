@@ -50,7 +50,7 @@ async function processNameAddForm(evt) {
     let name = $('#monster-name').val()
     let data = {name: name}
     let resp = await axios.post('/encounter/add-name', data)
-    monster = resp.data[0]
+    let monster = resp.data[0]
     trackAndAppend(monster)
 }
 
@@ -192,3 +192,16 @@ function removeMonster(evt) {
 }
 
 $('#monster-section').on('click', '.delete-btn', removeMonster)
+
+async function handleCreate() {
+    let title = $('#create-title').val()
+
+    let data = {
+        title: title,
+        monsters: monsterTracker
+        }  
+
+    await axios.post('/encounter/create', data)
+}
+
+$('#create-form').on('submit', handleCreate)

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Encounter Builder{% endblock %}
+
+{% block content %}
+{% include 'encounter.html' %}
+
+<footer class="footer vh-5 bg-dark fixed-bottom text-center">
+    {% if session['user_id'] %}
+    <form action='/users/{{session["user_id"]}}' id='create-form' methods="POST">
+        <span class="text-white">Encounter Title: </span><input type="text" id="create-title">
+        <button class="btn btn-sm btn-success" id="create-btn">Create</button>
+    </form>
+    {% endif %}
+</footer>
+
+<script src="/static/scripts/resources.js"></script>
+<script src="/static/scripts/helpers.js"></script>
+<script src="/static/scripts/encounterBuilderScripts.js"></script>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+{% endblock %}

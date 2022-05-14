@@ -1,9 +1,5 @@
-{% extends 'base.html' %}
-
-{% block title %}Encounter{% endblock %}
-
 {% block content %}
-<div class="container text-center vh-90">
+<div class="container text-center">
     <div class="row">
         <div class="col">
             <h5>1) Create your party:</h5>
@@ -52,7 +48,7 @@
             <input type='submit' form='parameters-form' class="btn btn-sm btn-success" value='Generate Random Encounter'/>
         </div>
     </div>
-    <div class="row mt-2">
+    <div class="row">
         <div class="col-3">
             <h5>4) Search by Type and CR:</h5>
             <form id="monster-search-form" method="POST">
@@ -80,14 +76,4 @@
         </div>  
     </div>
 </div>
-
-<script src="/static/scripts/resources.js"></script>
-<script src="/static/scripts/helpers.js"></script>
-<script src="/static/scripts/encounterScripts.js"></script>
-<script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-</script>
 {% endblock %}

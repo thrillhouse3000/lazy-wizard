@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from sqlalchemy.dialects.postgresql import JSON
 
 db = SQLAlchemy()
 
@@ -46,4 +47,32 @@ class User(db.Model):
         db.String(50),
         unique=True,
         nullable=False
+    )
+
+    encounter = db.relationship('Encounter', cascade='all, delete', backref='users')
+
+class Encounter(db.Model):
+
+    __tablename__ = 'encounters'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    title = db.Column(
+        db.String,
+        nullable=False,
+        unique=True
+    )
+
+    monsters = db.Column(
+        JSON,
+        nullable=False,
+    )
+
+    username = db.Column(
+        db.String,
+        db.ForeignKey('users.username')
     )

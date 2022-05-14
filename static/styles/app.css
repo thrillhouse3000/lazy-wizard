@@ -6,8 +6,16 @@ body {
     height: 5vh;
 }
 
+.vh-15 {
+    height: 17vh;
+}
+
+.vh-75 {
+    height: 70vh;
+}
+
 .vh-90 {
-    height: 90vh;
+    height: 80vh;
 }
 
 .card .row {
@@ -38,9 +46,14 @@ body {
 }
 
 .logout-btn {
+    font-size: small;
     color: rgba(255,255,255,.55);
     text-decoration: none;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+}
+
+.logout-btn:hover {
+    color: rgba(255, 255, 255, 0.86);
 }
 
 #search-section {
@@ -49,7 +62,7 @@ body {
     margin: 0;
     padding: 0;
     overflow: auto;
-    max-height: 55vh;
+    max-height: 52vh;
 }
 
 #search-section li {
@@ -62,8 +75,9 @@ body {
 }
 
 #monster-section {
-    max-height: 69vh;
     overflow: auto;
     overflow-x: hidden;
+    max-height: 65vh;
 }
+
 

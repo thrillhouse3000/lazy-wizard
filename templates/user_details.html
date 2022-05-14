@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+    <div class="container text-center">
+        <h5>{{user.username}}'s Profile</h5>
+
+        <h6>My Encounters:</h6>
+        <div class='text-center' id="user-encounters">
+            {% for encounter in user.encounter %}
+                <a href="/encounter/{{encounter.id}}" class="d-block">{{encounter.title}}</a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
