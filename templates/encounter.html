@@ -10,7 +10,7 @@
                         <option value="{{n}}">{{n}}</option>
                     {% endfor %}
                 </select>
-                <button class="btn btn-sm btn-success">Add Player</button>
+                <button class="btn btn-sm btn-lw">Add Player</button>
             </form>
             <div id="party"></div>
         </div>
@@ -43,9 +43,9 @@
             <form id="monster-name-add-form" method="POST">
                 <label for="name" class="form-label">Monster by Name:</label>
                 <input type="text" name="name" id="monster-name">
-                <button class="btn btn-sm btn-success">Add</button>
+                <button class="btn btn-sm btn-lw">Add</button>
             </form>
-            <input type='submit' form='parameters-form' class="btn btn-sm btn-success" value='Generate Random Encounter'/>
+            <input type='submit' form='parameters-form' class="btn btn-sm btn-lw" value='Generate Random Encounter'/>
         </div>
     </div>
     <div class="row">
@@ -64,14 +64,14 @@
                         {% endfor %}
                     </select>
                 </div>
-                <button class="btn btn-sm btn-success my-2">Search</button>
+                <button class="btn btn-sm my-1 btn-lw">Search</button>
             </form>
             <div>
                 <ul id="search-section"></ul>
             </div>
         </div>
         <div class="col" id="main-col">
-            <h5>Monsters</h5>
+            <h4>Monsters</h4>
             <div class="text-start mt-2" id="monster-section"></div>
         </div>  
     </div>

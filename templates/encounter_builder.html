@@ -9,8 +9,10 @@
     {% if session['user_id'] %}
     <form action='/users/{{session["user_id"]}}' id='create-form' methods="POST">
         <span class="text-white">Encounter Title: </span><input type="text" id="create-title">
-        <button class="btn btn-sm btn-success" id="create-btn">Create</button>
+        <button class="btn btn-sm btn-lw" id="create-btn">Create</button>
     </form>
+    {% else %}
+        <p>Log in to save your encounters!</p>
     {% endif %}
 </footer>
 

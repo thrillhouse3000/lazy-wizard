@@ -204,6 +204,15 @@ def update_encounter(encounter_id):
     flash('Encounter updated!', 'success')
     return redirect(url_for('show_user_details', username=session['user_id']))
 
+@app.route('/encounter/<int:encounter_id>/delete', methods=['POST'])
+def delete_encounter(encounter_id):
+    encounter = Encounter.query.get_or_404(encounter_id)
+    db.session.delete(encounter)
+    db.session.commit()
+    flash('Encounter deleted!', 'success')
+    return redirect(url_for('show_user_details', username=session['user_id']))
+
+    
 ## Route Functions
 
 

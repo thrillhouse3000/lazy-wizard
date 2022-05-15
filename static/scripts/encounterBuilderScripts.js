@@ -167,7 +167,7 @@ function printCrs(crCounter) {
     let el = $('#cr-section')
     el.empty()
     for (cr in crCounter) {
-        el.append(` (<b>${crCounter[cr]}x CR-${cr}</b>) `)
+        el.append(` (${crCounter[cr]}x CR-${cr}) `)
     }
 }
 

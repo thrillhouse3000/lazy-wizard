@@ -1,16 +1,16 @@
 function generateHtml(monster, i) {
-    return `<div class="card mb-3" data-slug='${monster.slug}'>
+    return `<div class="card mb-3 monster-card" data-slug='${monster.slug}'>
         <button class='me-0 btn btn-sm btn-danger delete-btn'>X</button>
         <div class="row" id='title-row'>
             <div class="col">
                 <div class="card-body">
-                    <h6 class="card-text d-inline" id='monster-name-${i}' data-id='${i}'>${monster.name}</h6>
+                    <h6 class="card-text d-inline" id='monster-name-${i}' data-id='${i}'><b>${monster.name}</b></h6>
                     <span id='monster-multiplier-${i}'></span>
                 </div>
             </div>
         </div>
         <div class="row g-0">
-            <div class="col-4">
+            <div class="col-3">
                 <div class="card-body">
                     <p class="card-text"><b>CR ${monster.challenge_rating}</b> ${monster.size} ${monster.type}, ${monster.alignment}</p>
                     <p class="card-text"><b>AC</b> ${monster.armor_class}</p>
@@ -18,7 +18,7 @@ function generateHtml(monster, i) {
                     ${monster.languages ? `<p class="card-text"><b>Languages</b> ${monster.languages}</p>` : ''}
                 </div>
             </div>
-            <div class="col-5">
+            <div class="col-7">
                 <div class="card-body">
                     <p class="card-text d-inline"><b>STR</b> ${monster.strength} (${getMod(monster.strength)})</p>
                     <p class="card-text d-inline"><b>DEX</b> ${monster.dexterity} (${getMod(monster.dexterity)})</p>
@@ -35,7 +35,7 @@ function generateHtml(monster, i) {
                     ${monster.condition_immunities ? `<p class="card-text"><b>Condition Immunities</b> ${monster.condition_immunities}</p>` : ''}
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-2">
                 <div class="card-body text-center" id='hp-${i}'>
                 </div>
             </div>

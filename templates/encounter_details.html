@@ -9,7 +9,7 @@
     <footer class="footer vh-5 bg-dark fixed-bottom text-center">
         {% if session['user_id'] %}
         <form action='/users/{{session["user_id"]}}' id='update-form' methods="POST">
-            <button class="btn btn-sm btn-success">Update Encounter</button>
+            <button class="btn btn-sm btn-lw">Update Encounter</button>
         </form>
         {% endif %}
     </footer>
