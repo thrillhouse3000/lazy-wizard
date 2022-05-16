@@ -8,8 +8,9 @@
 
     <footer class="footer vh-5 bg-dark fixed-bottom text-center">
         {% if session['user_id'] %}
-        <form action='/users/{{session["user_id"]}}' id='update-form' methods="POST">
-            <button class="btn btn-sm btn-lw">Update Encounter</button>
+        <form action='/encounter/{{encounter.id}}/update' id='update-form' method="POST">
+            <input type="hidden"  name='monsters' id='monsterRef'>
+            <button class="btn btn-sm btn-lw" id="update-btn">Update Encounter</button>
         </form>
         {% endif %}
     </footer>

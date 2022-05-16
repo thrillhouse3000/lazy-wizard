@@ -131,7 +131,7 @@ async function processParametersForm(evt) {
     }
 
     let resp = await axios.post('/encounter/generate', data)
-    let monsters = resp.data.monsters
+    monsters = resp.data.monsters
     monsterTracker = {...monsters}
     clearMonsters()
     appendMonsters(monsters)
@@ -155,7 +155,7 @@ async function updateCrs() {
 
     let data = {
         difficulty: difficulty,
-        density: density,
+        density: density
     }
 
     let resp = await axios.post('/encounter/calc-crs', data)
@@ -193,15 +193,37 @@ function removeMonster(evt) {
 
 $('#monster-section').on('click', '.delete-btn', removeMonster)
 
-async function handleCreate() {
-    let title = $('#create-title').val()
+// async function handleCreate(evt) {
+//     evt.preventDefault()
+//     let title = $('#create-title').val()
+   
 
-    let data = {
-        title: title,
-        monsters: monsterTracker
-        }  
+   
 
-    await axios.post('/encounter/create', data)
+//     let data = {
+//         title: title,
+//         monsters: monsterRef
+//         }  
+
+//     console.log(data)    
+//     resp = await axios.post('/encounter/create', data)
+// }
+
+// $('#create-form').on('submit', handleCreate)
+
+
+function getRef(monsterTracker) {
+    let monsterRef = {}
+    for (let monster in monsterTracker) {
+        monsterRef[monsterTracker[`${monster}`].name] = `${monsterTracker[monster].count}`
+    }
+    return JSON.stringify(monsterRef)
 }
 
-$('#create-form').on('submit', handleCreate)
+function submitCreate() {
+    let monsterRef = getRef(monsterTracker)
+    $('#monsterRef').val(monsterRef)
+    $('#create-form').submit()
+}
+
+$('#create-btn').on('click', submitCreate)

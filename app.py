@@ -6,6 +6,7 @@ import random
 from collections import Counter
 import requests
 import resources
+import json
 from forms import RegisterForm, LoginForm
 
 app = Flask(__name__)
@@ -172,17 +173,16 @@ def get_spells():
     
     return jsonify(spells)
 
-@app.route('/encounter/create', methods=["GET", "POST"])
+@app.route('/encounter/create', methods=["POST"])
 def save_encounter():
-    data = request.json
-    title = data['title']
-    monsters = data['monsters']
+    title = request.form['title']
+    monsters = json.loads(request.form['monsters'])
     username = session['user_id']
     new_encounter = Encounter(title=title, monsters=monsters, username=username)
     db.session.add(new_encounter)
     db.session.commit()
     flash('Encounter saved!', 'success')
-    return redirect(url_for('show_user_details', username=username))
+    return redirect(f'/users/{session["user_id"]}')
 
 @app.route('/encounter/<int:encounter_id>', methods=['GET', 'POST'])
 def show_encounter(encounter_id):
@@ -197,12 +197,12 @@ def show_encounter(encounter_id):
 
 @app.route('/encounter/<int:encounter_id>/update', methods=['POST'])
 def update_encounter(encounter_id):
-    data = request.json
+    monsters = json.loads(request.form['monsters'])
     encounter = Encounter.query.get_or_404(encounter_id)
-    encounter.monsters = data['monsters']
+    encounter.monsters = monsters
     db.session.commit()
     flash('Encounter updated!', 'success')
-    return redirect(url_for('show_user_details', username=session['user_id']))
+    return redirect(f'/users/{session["user_id"]}')
 
 @app.route('/encounter/<int:encounter_id>/delete', methods=['POST'])
 def delete_encounter(encounter_id):
@@ -212,7 +212,7 @@ def delete_encounter(encounter_id):
     flash('Encounter deleted!', 'success')
     return redirect(url_for('show_user_details', username=session['user_id']))
 
-    
+
 ## Route Functions
 
 

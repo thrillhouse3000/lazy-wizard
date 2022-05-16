@@ -7,9 +7,10 @@
 
 <footer class="footer vh-5 bg-dark fixed-bottom text-center">
     {% if session['user_id'] %}
-    <form action='/users/{{session["user_id"]}}' id='create-form' methods="POST">
-        <span class="text-white">Encounter Title: </span><input type="text" id="create-title">
-        <button class="btn btn-sm btn-lw" id="create-btn">Create</button>
+    <form action='/encounter/create' id='create-form' method="POST">
+        <span class="text-white">Encounter Title: </span><input type="text" name="title" id="create-title">
+        <input type="hidden"  name='monsters' id='monsterRef'>
+        <button type="button" class="btn btn-sm btn-lw" id="create-btn">Create</button>
     </form>
     {% else %}
         <p>Log in to save your encounters!</p>
