@@ -5,7 +5,7 @@
 {% block content %}
 {% include 'encounter.html' %}
 
-<footer class="footer vh-5 bg-dark fixed-bottom text-center">
+<footer class="footer vh-5 bg-dark fixed-bottom text-center" id="builder-footer">
     {% if session['user_id'] %}
     <form action='/encounter/create' id='create-form' method="POST">
         <span class="text-white">Encounter Title: </span><input type="text" name="title" id="create-title">

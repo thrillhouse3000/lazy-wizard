@@ -21,10 +21,9 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
-
 @app.route('/')
 def homepage():
-    return redirect('/register')
+    return render_template('home.html')
 
 
 ##User Routes
@@ -32,20 +31,24 @@ def homepage():
 
 @app.route('/register', methods=['GET', 'POST'])
 def handle_registration():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        data = {k:v for k, v in form.data.items() if k != 'csrf_token'}
-        new_user = User.register(**data)
-        db.session.add(new_user)
-        try:
-            db.session.commit()
-        except IntegrityError:
-            form.username.errors.append('Username is already in use. Please choose a different one.')
-            return render_template('register.html', form=form)
-        session['user_id'] = new_user.username
-        flash ('Account created!', 'success')
-        return redirect('/encounter')
-    return render_template('register.html', form=form)
+    if 'user_id' in session:
+        flash('You are already logged in.', 'danger')
+        return redirect('/')
+    else:
+        form = RegisterForm()
+        if form.validate_on_submit():
+            data = {k:v for k, v in form.data.items() if k != 'csrf_token'}
+            new_user = User.register(**data)
+            db.session.add(new_user)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                form.username.errors.append('Username is already in use. Please choose a different one.')
+                return render_template('register.html', form=form)
+            session['user_id'] = new_user.username
+            flash ('Account created!', 'success')
+            return redirect('/encounter')
+        return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def handle_login():
@@ -77,7 +80,11 @@ def handle_logout():
 @app.route('/users/<username>')
 def show_user_details(username):
     user = User.query.get_or_404(username)
-    return render_template('user_details.html', user=user)
+    if user.username != session['user_id']:
+        flash('Not authorized to do that.', 'danger')
+        return redirect('/')
+    else:
+        return render_template('user_details.html', user=user)
 
 
 ##Encounter Routes
@@ -105,13 +112,20 @@ def calculate_crs():
 @app.route('/encounter/add-name', methods=['POST'])
 def add_monster_name():
     data = request.json
-    name = data['name'].lower().capitalize()
+    name = data['name']
+    name.replace(' ','%20').capitalize()
     payload = {'name': str(name)}
 
     res = requests.get('https://api.open5e.com/monsters/', params=payload)
     json = res.json()
-    monster = json['results']
-    return jsonify(monster)
+    print(json)
+    if json['results'] == []:
+        err_dict = {'errors': {}}
+        err_dict['errors']['invalid_name'] = "Couldn't find that monster."
+        return jsonify(err_dict)
+    else:   
+        monster = json['results']
+        return jsonify(monster)
 
 @app.route('/encounter/search', methods=['POST'])
 def add_monster_cr():
@@ -128,9 +142,15 @@ def add_monster_cr():
 
     res = requests.get('https://api.open5e.com/monsters/', params=payload)
     json = res.json()
-    results = json['results']
-    get_next(json, results)
-    return jsonify(results)
+    print(json)
+    if json['results'] == []:
+        err_dict = {'errors': {}}
+        err_dict['errors']['invalid_term'] = "No monsters of that type/CR found (CR must be between 0 and 30)."
+        return jsonify(err_dict)
+    else:   
+        results = json['results']
+        get_next(json, results)
+        return jsonify(results)
 
 @app.route('/encounter/generate', methods=["POST"])
 def generate_encounter():
@@ -138,28 +158,32 @@ def generate_encounter():
     difficulty = data['difficulty']
     density = data['density']
 
-    crs = resources.convert_xp_to_cr(difficulty, density)
-    counter = Counter()
-    for cr in crs:
-        counter[cr] += 1
-    set_crs = set(crs)
-    ordered = sorted(set_crs, reverse=True)
-    monsters = {}
+    if difficulty == 0 :
+        err_dict = {'errors': {}}
+        err_dict['errors']['invalid_party'] = "You must create a party before generating an encounter."
+        return jsonify(err_dict)
+    else:
+        crs = resources.convert_xp_to_cr(difficulty, density)
+        counter = Counter()
+        for cr in crs:
+            counter[cr] += 1
+        set_crs = set(crs)
+        ordered = sorted(set_crs, reverse=True)
+        monsters = {}
 
-    for cr in ordered:
-        payload = {}
-        payload['challenge_rating'] = str(cr)
-        res = requests.get('https://api.open5e.com/monsters/', params=payload)
-        json = res.json()
-        results = json['results']
-        get_next(json, results)
-        monster = random.choice(results)
-        monsters[f"{monster['slug']}"] = {}
-        monsters[f"{monster['slug']}"]["count"] = counter[cr]
-        monsters[f"{monster['slug']}"]["name"] = monster['name']
-        monsters[f"{monster['slug']}"]["data"] = monster
-
-    return jsonify(monsters=monsters)
+        for cr in ordered:
+            payload = {}
+            payload['challenge_rating'] = str(cr)
+            res = requests.get('https://api.open5e.com/monsters/', params=payload)
+            json = res.json()
+            results = json['results']
+            get_next(json, results)
+            monster = random.choice(results)
+            monsters[f"{monster['slug']}"] = {}
+            monsters[f"{monster['slug']}"]["count"] = counter[cr]
+            monsters[f"{monster['slug']}"]["name"] = monster['name']
+            monsters[f"{monster['slug']}"]["data"] = monster
+        return jsonify(monsters=monsters)
 
 @app.route('/encounter/spells', methods=['POST'])
 def get_spells():
@@ -180,7 +204,11 @@ def save_encounter():
     username = session['user_id']
     new_encounter = Encounter(title=title, monsters=monsters, username=username)
     db.session.add(new_encounter)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        flash('An encounter with that title already exists.', 'danger')
+        return redirect(request.referrer)
     flash('Encounter saved!', 'success')
     return redirect(f'/users/{session["user_id"]}')
 

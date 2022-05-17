@@ -50,8 +50,13 @@ async function processNameAddForm(evt) {
     let name = $('#monster-name').val()
     let data = {name: name}
     let resp = await axios.post('/encounter/add-name', data)
-    let monster = resp.data[0]
-    trackAndAppend(monster)
+    $('.danger').remove()
+    if (resp.data.errors) {
+        showErrors('#monster-section', resp.data.errors)
+    } else {
+        let monster = resp.data[0]
+        trackAndAppend(monster)
+    } 
 }
 
 $('#monster-name-add-form').on('submit', processNameAddForm)
@@ -62,11 +67,17 @@ async function processSearchForm(evt) {
     let cr = $('#monster-cr').val()
     let type = $('#monster-type').val()
     let data = {challenge_rating: cr, type: type}
+
+    $('#search-section').empty()
     loadingSpinner('#search-section')
     let resp = await axios.post('/encounter/search', data)
     endSpinner()
-    searchResults = {...resp.data}
-    populateSearchList(resp)
+    if (resp.data.errors) {
+        showErrors('#search-section', resp.data.errors)
+    } else {
+        searchResults = {...resp.data}
+        populateSearchList(resp)
+    }
 }
 
 function populateSearchList(resp) {
@@ -132,13 +143,18 @@ async function processParametersForm(evt) {
         density: density,
     }
 
+    $('#monster-section').empty()
     loadingSpinner('#monster-section')
     let resp = await axios.post('/encounter/generate', data)
     endSpinner()
-    monsters = resp.data.monsters
-    monsterTracker = {...monsters}
-    clearMonsters()
-    appendMonsters(monsters)
+    if (resp.data.errors) {
+        showErrors('#monster-section', resp.data.errors)
+    } else {
+        monsters = resp.data.monsters
+        monsterTracker = {...monsters}
+        clearMonsters()
+        appendMonsters(monsters)
+    }
 }
 
 async function updateCrs() {

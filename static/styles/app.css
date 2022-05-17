@@ -6,6 +6,7 @@ body {
                 0px 8px 13px rgba(0,0,0,0.1),
                 0px 18px 23px rgba(0,0,0,0.1);
     background-image: url("https://images.unsplash.com/photo-1635075874856-dba5c46326da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80");
+    /* photo by: Amandine BATAILLE */
     background-repeat: no-repeat;
     background-size: 100% 100%; 
     height: 100vh;
@@ -22,6 +23,10 @@ body {
 
 .vh-95 {
     height: 95vh;
+}
+
+.num-header {
+    font-size: x-large;
 }
 
 input {
@@ -74,12 +79,25 @@ a {
     border-radius: 2px;
     background-color: rgba(255, 255, 255, 0.8);
     color: black;
+    text-shadow: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.party-icon:hover {
+    background-color: white;
 }
 
 .success {
     text-align: center;
     color: white;
     background-color: green;
+}
+
+.danger {
+    text-align: center;
+    color: white;
+    background-color: red;
 }
 
 .logout-btn {
@@ -97,7 +115,7 @@ a {
     background-color: rgba(255, 255, 255, 0.8);
     text-shadow: none;
     width: 30rem; 
-    height: 20rem;
+    height: auto;
 }
 
 .monster-card {
@@ -111,7 +129,7 @@ a {
     margin: 0;
     padding: 0;
     overflow: auto;
-    max-height: 52vh;
+    max-height: 55vh;
 }
 
 #search-section li {
