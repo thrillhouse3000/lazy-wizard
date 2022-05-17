@@ -22,25 +22,6 @@ $(document).ready(function(){
     loadMonsters()
 })
 
-// async function updateEncounter() {
-//     let data = {
-//         id: encounterId,
-//         monsters: monsterTracker
-//         }  
-
-//     await axios.post(`/encounter/${encounterId}/update`, data)
-// }
-
-// $('#update-form').on('submit', updateEncounter)
-
-function getRef(monsterTracker) {
-    let monsterRef = {}
-    for (let monster in monsterTracker) {
-        monsterRef[monsterTracker[`${monster}`].name] = `${monsterTracker[monster].count}`
-    }
-    return JSON.stringify(monsterRef)
-}
-
 function submitUpdate() {
     let monsterRef = getRef(monsterTracker)
     $('#monsterRef').val(monsterRef)

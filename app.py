@@ -105,7 +105,7 @@ def calculate_crs():
 @app.route('/encounter/add-name', methods=['POST'])
 def add_monster_name():
     data = request.json
-    name = data['name']
+    name = data['name'].lower().capitalize()
     payload = {'name': str(name)}
 
     res = requests.get('https://api.open5e.com/monsters/', params=payload)
@@ -209,8 +209,7 @@ def delete_encounter(encounter_id):
     encounter = Encounter.query.get_or_404(encounter_id)
     db.session.delete(encounter)
     db.session.commit()
-    flash('Encounter deleted!', 'success')
-    return redirect(url_for('show_user_details', username=session['user_id']))
+    return redirect(f'/users/{session["user_id"]}')
 
 
 ## Route Functions

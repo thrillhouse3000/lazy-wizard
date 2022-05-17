@@ -11,6 +11,11 @@ body {
     height: 100vh;
 }
 
+.top-row {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
 .vh-5 {
     height: 5vh;
 }
@@ -31,6 +36,11 @@ select {
 option {
     text-align: center;
     background-color: rgba(255, 255, 255, 0.8);
+}
+
+#title-row {
+    border-bottom: 3px solid rgb(154, 24, 24);
+    margin-bottom: 0.5rem;
 }
 
 .btn-lw {
@@ -128,6 +138,60 @@ a {
     align-self: center;
     background-color: rgba(255, 255, 255, 0.8);
     text-shadow: none;
+    margin-bottom: 1rem;
 }
+
+/* animated spinner from https://loading.io/css/ */
+.lds-dual-ring {
+    position: fixed;
+    top: 45%;
+    left: 45%;
+	display: block;
+	width: 200px;
+	height: 200px;
+}
+.lds-dual-ring:after {
+	content: " ";
+	display: block;
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	border: 6px solid #fff;
+	border-color: #fff transparent #fff transparent;
+	animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.spell-dual-ring {
+	display: block;
+	width: 30px;
+	height: 30px;
+}
+.spell-dual-ring:after {
+	content: " ";
+	display: block;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	border: 6px solid rgb(0, 0, 0);
+	border-color:rgb(0, 0, 0) transparent rgb(0, 0, 0) transparent;
+	animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes spell-dual-ring {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 
 

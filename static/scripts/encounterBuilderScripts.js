@@ -62,7 +62,9 @@ async function processSearchForm(evt) {
     let cr = $('#monster-cr').val()
     let type = $('#monster-type').val()
     let data = {challenge_rating: cr, type: type}
+    loadingSpinner('#search-section')
     let resp = await axios.post('/encounter/search', data)
+    endSpinner()
     searchResults = {...resp.data}
     populateSearchList(resp)
 }
@@ -130,7 +132,9 @@ async function processParametersForm(evt) {
         density: density,
     }
 
+    loadingSpinner('#monster-section')
     let resp = await axios.post('/encounter/generate', data)
+    endSpinner()
     monsters = resp.data.monsters
     monsterTracker = {...monsters}
     clearMonsters()
@@ -192,33 +196,6 @@ function removeMonster(evt) {
 }
 
 $('#monster-section').on('click', '.delete-btn', removeMonster)
-
-// async function handleCreate(evt) {
-//     evt.preventDefault()
-//     let title = $('#create-title').val()
-   
-
-   
-
-//     let data = {
-//         title: title,
-//         monsters: monsterRef
-//         }  
-
-//     console.log(data)    
-//     resp = await axios.post('/encounter/create', data)
-// }
-
-// $('#create-form').on('submit', handleCreate)
-
-
-function getRef(monsterTracker) {
-    let monsterRef = {}
-    for (let monster in monsterTracker) {
-        monsterRef[monsterTracker[`${monster}`].name] = `${monsterTracker[monster].count}`
-    }
-    return JSON.stringify(monsterRef)
-}
 
 function submitCreate() {
     let monsterRef = getRef(monsterTracker)

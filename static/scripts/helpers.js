@@ -8,7 +8,7 @@ function generateHtml(monster, i) {
                     <span id='monster-multiplier-${i}'></span>
                 </div>
             </div>
-        </div>
+        </div>  
         <div class="row g-0">
             <div class="col-3">
                 <div class="card-body">
@@ -188,7 +188,9 @@ async function getSpells(monsters, i) {
         for (let j = 0; j < monsters.length; j++) {
             data[`${j}`] = monsters[j]
         }
+        loadSpellSpinner(`#spell-list-${i}`)
         let resp = await axios.post('/encounter/spells', data)
+        endSpellSpinner()
         appendSpells(resp.data, i)
     }
 }
@@ -203,4 +205,28 @@ function appendSpells(monsters, i) {
         let el = generateSpellHtml(monsters[j])
         $(`#spell-list-${i}`).append(el)
     }
+}
+
+function getRef(monsterTracker) {
+    let monsterRef = {}
+    for (let monster in monsterTracker) {
+        monsterRef[monsterTracker[`${monster}`].name] = `${monsterTracker[monster].count}`
+    }
+    return JSON.stringify(monsterRef)
+}
+
+function loadingSpinner(el){
+    $(el).append('<div class="lds-dual-ring" id="spinner"></div>')
+}
+
+function endSpinner() {
+    $('#spinner').remove();
+}
+
+function loadSpellSpinner(el){
+    $(el).append('<div class="spell-dual-ring" id="spell-spinner"></div>')
+}
+
+function endSpellSpinner() {
+    $('#spell-spinner').remove();
 }
