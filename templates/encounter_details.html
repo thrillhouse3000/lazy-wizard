@@ -2,12 +2,12 @@
 
 {% block title %}{{encounter.title}}{% endblock %}
 
-{% block content %}'
+{% block content %}
     {% include 'encounter.html' %}
     <meta id="encounter-id" data-id="{{encounter.id}}">
 
     <footer class="footer vh-5 bg-dark fixed-bottom text-center">
-        {% if session['user_id'] %}
+        {% if g.user %}
         <form action='/encounter/{{encounter.id}}/update' id='update-form' method="POST">
             <input type="hidden"  name='monsters' id='monsterRef'>
             <button class="btn btn-sm btn-lw" id="update-btn">Update Encounter</button>

@@ -50,7 +50,7 @@ async function processNameAddForm(evt) {
     let name = $('#monster-name').val()
     let data = {name: name}
     let resp = await axios.post('/encounter/add-name', data)
-    $('.danger').remove()
+    $('.warning').remove()
     if (resp.data.errors) {
         showErrors('#monster-section', resp.data.errors)
     } else {
@@ -214,9 +214,13 @@ function removeMonster(evt) {
 $('#monster-section').on('click', '.delete-btn', removeMonster)
 
 function submitCreate() {
-    let monsterRef = getRef(monsterTracker)
-    $('#monsterRef').val(monsterRef)
-    $('#create-form').submit()
+    if ($('#create-title').val() === '') {
+        $('.footer-errors').text('Title required.')
+    } else {
+        let monsterRef = getRef(monsterTracker)
+        $('#monsterRef').val(monsterRef)
+        $('#create-form').submit()
+    }
 }
 
 $('#create-btn').on('click', submitCreate)

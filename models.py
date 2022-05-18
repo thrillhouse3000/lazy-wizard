@@ -64,7 +64,6 @@ class Encounter(db.Model):
     title = db.Column(
         db.String,
         nullable=False,
-        unique=True
     )
 
     monsters = db.Column(

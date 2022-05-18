@@ -35,16 +35,16 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/encounter">Encounter Builder</a>
                         </li>
-                        {% if not session['user_id'] %}
+                        {% if not g.user %}
                         <li class="nav-item">
                             <a class="nav-link" href="/register">Register</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/login">Login</a>
                         </li>
-                        {% elif session['user_id'] %}
+                        {% elif g.user %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/users/{{session['user_id']}}">My Profile</a>
+                            <a class="nav-link" href="/users/{{g.user.username}}">My Profile</a>
                         </li>
                         <li class="nav-item">
                             <form action="/logout" method="POST">

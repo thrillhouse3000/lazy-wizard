@@ -233,7 +233,7 @@ function endSpellSpinner() {
 
 function showErrors(targetEl, errors) {
     for (let error in errors) {
-        let el = `<div class='danger'>${errors[error]}</div>`
+        let el = `<div class='warning'>${errors[error]}</div>`
         $(targetEl).append(el)
     }
 }

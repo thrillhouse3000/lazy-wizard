@@ -15,6 +15,7 @@ body {
 .top-row {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
+    height: 15vh;
 }
 
 .vh-5 {
@@ -92,12 +93,24 @@ a {
     text-align: center;
     color: white;
     background-color: green;
+    position: absolute;
+    left: 45%;
+    top: 1vh;
 }
 
 .danger {
     text-align: center;
     color: white;
     background-color: red;
+    position: absolute;
+    left: 45%;
+    top: 1vh;
+}
+
+.warning {
+    text-align: center;
+    color: white;
+    background-color: rgb(255, 0, 0);
 }
 
 .logout-btn {
@@ -118,6 +131,11 @@ a {
     height: auto;
 }
 
+.bottom-row {
+    display: flex;
+    height: 75vh;
+}
+
 .monster-card {
     color: black;
     text-shadow: none;
@@ -129,7 +147,8 @@ a {
     margin: 0;
     padding: 0;
     overflow: auto;
-    max-height: 55vh;
+    max-height: 61vh;
+    flex: 1 1 auto;
 }
 
 #search-section li {
@@ -148,7 +167,7 @@ a {
 #monster-section {
     overflow: auto;
     overflow-x: hidden;
-    max-height: 65vh;
+    max-height: 70vh; 
 }
 
 #user-encounters .card {
@@ -167,15 +186,17 @@ a {
 	display: block;
 	width: 200px;
 	height: 200px;
+    z-index: 9999;
 }
 .lds-dual-ring:after {
 	content: " ";
 	display: block;
 	width: 200px;
 	height: 200px;
+    z-index: 9999;
 	border-radius: 50%;
-	border: 6px solid #fff;
-	border-color: #fff transparent #fff transparent;
+	border: 20px solid rgba(0, 0, 0, 0.7);
+	border-color: rgba(0, 0, 0, 0.7) transparent rgba(0, 0, 0, 0.7) transparent;
 	animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {

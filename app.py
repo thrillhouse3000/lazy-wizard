@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, flash, session, jsonify, url_for
+from flask import Flask, request, render_template, redirect, flash, session, jsonify, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Encounter
@@ -21,6 +21,17 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
+CURR_USER_KEY = 'curr-user'
+
+@app.before_request
+def add_user_to_g():
+    """If we're logged in, add curr user to Flask global."""
+    if CURR_USER_KEY in session:
+        g.user = User.query.get(session[CURR_USER_KEY])
+
+    else:
+        g.user = None
+
 @app.route('/')
 def homepage():
     return render_template('home.html')
@@ -31,7 +42,7 @@ def homepage():
 
 @app.route('/register', methods=['GET', 'POST'])
 def handle_registration():
-    if 'user_id' in session:
+    if g.user:
         flash('You are already logged in.', 'danger')
         return redirect('/')
     else:
@@ -45,15 +56,15 @@ def handle_registration():
             except IntegrityError:
                 form.username.errors.append('Username is already in use. Please choose a different one.')
                 return render_template('register.html', form=form)
-            session['user_id'] = new_user.username
+            set_login(new_user)
             flash ('Account created!', 'success')
-            return redirect('/encounter')
+            return redirect(f'/users/{new_user.username}')
         return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def handle_login():
     """Render and handle user login form"""
-    if 'user_id' in session:
+    if g.user:
         flash('You are already logged in.', 'danger')
         return redirect('/')
     else:
@@ -63,8 +74,8 @@ def handle_login():
             user = User.authenticate(**data)
 
             if user:
+                set_login(user)
                 flash(f'Welcome back {user.username}!', 'success')
-                session['user_id'] = user.username
                 return redirect(f'/users/{user.username}')
             else:
                 form.username.errors = ['Invalid Username/Password.']
@@ -73,14 +84,14 @@ def handle_login():
 @app.route('/logout', methods=['POST'])
 def handle_logout():
     """remove user_id from session"""
-    session.pop('user_id')
+    set_logout()
     flash('Successfully logged out!', 'success')
     return redirect('/')
 
 @app.route('/users/<username>')
 def show_user_details(username):
     user = User.query.get_or_404(username)
-    if user.username != session['user_id']:
+    if g.user.username != user.username:
         flash('Not authorized to do that.', 'danger')
         return redirect('/')
     else:
@@ -198,50 +209,75 @@ def get_spells():
     return jsonify(spells)
 
 @app.route('/encounter/create', methods=["POST"])
-def save_encounter():
-    title = request.form['title']
-    monsters = json.loads(request.form['monsters'])
-    username = session['user_id']
-    new_encounter = Encounter(title=title, monsters=monsters, username=username)
-    db.session.add(new_encounter)
-    try:
+def create_encounter():
+    if not g.user:
+        flash('Not authorized to do that.', 'danger')
+        return redirect('/')
+    else:
+        if request.form['monsters'] != '{}':
+            title = request.form['title']
+            monsters = json.loads(request.form['monsters'])
+            username = g.user.username
+            new_encounter = Encounter(title=title, monsters=monsters, username=username)
+            db.session.add(new_encounter)
+        else:
+            flash('Nothing to save.', 'danger')
+            return redirect(request.referrer)
         db.session.commit()
-    except IntegrityError:
-        flash('An encounter with that title already exists.', 'danger')
-        return redirect(request.referrer)
-    flash('Encounter saved!', 'success')
-    return redirect(f'/users/{session["user_id"]}')
+        flash('Encounter saved!', 'success')
+        return redirect(f'/users/{g.user.username}')
 
 @app.route('/encounter/<int:encounter_id>', methods=['GET', 'POST'])
 def show_encounter(encounter_id):
-    if request.method == 'GET':
-        encounter = Encounter.query.get_or_404(encounter_id)
-        creature_types = resources.creature_types
-        return render_template('encounter_details.html', encounter=encounter, creature_types=creature_types)
+    encounter = Encounter.query.get_or_404(encounter_id)
+    if g.user.username != encounter.username:
+        flash('Not authorized to do that.', 'danger')
+        return redirect('/')
     else:
-        encounter = Encounter.query.get_or_404(encounter_id)
-        monsters = encounter.monsters
-        return jsonify(monsters)
+        if request.method == 'GET':
+            encounter = Encounter.query.get_or_404(encounter_id)
+            creature_types = resources.creature_types
+            return render_template('encounter_details.html', encounter=encounter, creature_types=creature_types)
+        else:
+            encounter = Encounter.query.get_or_404(encounter_id)
+            monsters = encounter.monsters
+            return jsonify(monsters)
 
 @app.route('/encounter/<int:encounter_id>/update', methods=['POST'])
 def update_encounter(encounter_id):
-    monsters = json.loads(request.form['monsters'])
     encounter = Encounter.query.get_or_404(encounter_id)
-    encounter.monsters = monsters
-    db.session.commit()
-    flash('Encounter updated!', 'success')
-    return redirect(f'/users/{session["user_id"]}')
+    if g.user.username != encounter.username:
+        flash('Not authorized to do that.', 'danger')
+        return redirect('/')
+    else:
+        monsters = json.loads(request.form['monsters'])
+        encounter.monsters = monsters
+        db.session.commit()
+        flash('Encounter updated!', 'success')
+        return redirect(f'/users/{g.user.username}')
 
 @app.route('/encounter/<int:encounter_id>/delete', methods=['POST'])
 def delete_encounter(encounter_id):
     encounter = Encounter.query.get_or_404(encounter_id)
-    db.session.delete(encounter)
-    db.session.commit()
-    return redirect(f'/users/{session["user_id"]}')
+    if g.user.username != encounter.username:
+        flash('Not authorized to do that.', 'danger')
+        return redirect('/')
+    else:
+        db.session.delete(encounter)
+        db.session.commit()
+        return redirect(f'/users/{g.user.username}')
 
 
 ## Route Functions
 
+def set_login(user):
+    """Log in user."""
+    session[CURR_USER_KEY] = user.username
+
+def set_logout():
+    """Logout user."""
+    if CURR_USER_KEY in session:
+        del session[CURR_USER_KEY]
 
 def get_next(json_response, results):
     if (json_response['next']):
