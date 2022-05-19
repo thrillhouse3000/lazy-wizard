@@ -62,6 +62,7 @@ exp_to_cr = [
 cr_list = [i for i in reversed(exp_to_cr)]
 
 def calc_crs(xp, mod, limit):
+    """Using the resources tables, determine the maximum CRs that can occurr in encounter"""
     crs = []
     i = 0
     n = 1
@@ -87,14 +88,14 @@ def calc_crs(xp, mod, limit):
             i += 1
     return crs  
 
-def convert_xp_to_cr(xp, density):
+def convert_xp_to_cr(xp_total, density):
     """take XP budget and convert to corresponding monster CRs"""
     if density == 'one':
-        return calc_crs(xp, 1, 1)
+        return calc_crs(xp_total, 1, 1)
     elif density == 'few':
-        return calc_crs(xp, 0.35, 5)
+        return calc_crs(xp_total, 0.35, 5)
     elif density == 'many':
-        return calc_crs(xp, 0.25, 10)
+        return calc_crs(xp_total, 0.25, 10)
     elif density == 'horde':
-        return calc_crs(xp, 0.1, 15)
+        return calc_crs(xp_total, 0.1, 15)
     

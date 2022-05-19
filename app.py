@@ -7,14 +7,16 @@ from collections import Counter
 import requests
 import resources
 import json
+import os
 from forms import RegisterForm, LoginForm
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///lazy_wizard'
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    os.environ.get('DATABASE_URL', 'postgresql:///lazy_wizard'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['SECRET_KEY'] = 'secretsecret'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
@@ -42,6 +44,7 @@ def homepage():
 
 @app.route('/register', methods=['GET', 'POST'])
 def handle_registration():
+    """Render and handle user registration form"""
     if g.user:
         flash('You are already logged in.', 'danger')
         return redirect('/')
@@ -90,6 +93,7 @@ def handle_logout():
 
 @app.route('/users/<username>')
 def show_user_details(username):
+    """Render user's details"""
     user = User.query.get_or_404(username)
     if g.user.username != user.username:
         flash('Not authorized to do that.', 'danger')
@@ -103,17 +107,18 @@ def show_user_details(username):
 
 @app.route('/encounter')
 def encounter_builder():
-    """Show home page"""
+    """Render the encounter building page"""
     creature_types = resources.creature_types
     return render_template('encounter_builder.html', creature_types=creature_types)
 
 @app.route('/encounter/calc-crs', methods=["POST"])
 def calculate_crs():
+    """Return calculated CRs based on user inputs"""
     data = request.json
-    difficulty = data['difficulty']
+    xp_total = data['xp_total']
     density = data['density']
 
-    crs = resources.convert_xp_to_cr(difficulty, density)
+    crs = resources.convert_xp_to_cr(xp_total, density)
     counter = Counter()
     for cr in crs:
         counter[cr] += 1
@@ -121,6 +126,7 @@ def calculate_crs():
 
 @app.route('/encounter/add-name', methods=['POST'])
 def add_monster_name():
+    """Get monster data based on name and return JSON"""
     data = request.json
     name = data['name']
     caps = [word.capitalize() for word in name.split(' ')]
@@ -138,7 +144,8 @@ def add_monster_name():
         return jsonify(monster)
 
 @app.route('/encounter/search', methods=['POST'])
-def add_monster_cr():
+def search_monster():
+    """Retrieve list of monsters based off type and CR"""
     data = request.json
     cr = data['challenge_rating']
     type = data['type']
@@ -152,7 +159,6 @@ def add_monster_cr():
 
     res = requests.get('https://api.open5e.com/monsters/', params=payload)
     json = res.json()
-    print(json)
     if json['results'] == []:
         err_dict = {'errors': {}}
         err_dict['errors']['invalid_term'] = "No monsters of that type/CR found (CR must be between 0 and 30)."
@@ -164,16 +170,17 @@ def add_monster_cr():
 
 @app.route('/encounter/generate', methods=["POST"])
 def generate_encounter():
+    """Create monster dictionary based off of calculated CRs. Return as JSON"""
     data = request.json
-    difficulty = data['difficulty']
+    xp_total = data['xp_total']
     density = data['density']
 
-    if difficulty == 0 :
+    if xp_total == 0 :
         err_dict = {'errors': {}}
         err_dict['errors']['invalid_party'] = "You must gather your party before venturing forth."
         return jsonify(err_dict)
     else:
-        crs = resources.convert_xp_to_cr(difficulty, density)
+        crs = resources.convert_xp_to_cr(xp_total, density)
         counter = Counter()
         for cr in crs:
             counter[cr] += 1
@@ -197,6 +204,7 @@ def generate_encounter():
 
 @app.route('/encounter/spells', methods=['POST'])
 def get_spells():
+    """Fetch API data if monster has spell list"""
     data = request.json
     spells = {}
 
@@ -209,15 +217,18 @@ def get_spells():
 
 @app.route('/encounter/create', methods=["POST"])
 def create_encounter():
+    """Create encounter and upload to DB"""
     if not g.user:
         flash('Not authorized to do that.', 'danger')
         return redirect('/')
     else:
+        print(request.form)
         if request.form['monsters'] != '{}':
             title = request.form['title']
             monsters = json.loads(request.form['monsters'])
             username = g.user.username
             new_encounter = Encounter(title=title, monsters=monsters, username=username)
+            print(new_encounter)
             db.session.add(new_encounter)
         else:
             flash('Nothing to save.', 'danger')
@@ -228,6 +239,7 @@ def create_encounter():
 
 @app.route('/encounter/<int:encounter_id>', methods=['GET', 'POST'])
 def show_encounter(encounter_id):
+    """Render encounter template and retrieve encounter data"""
     encounter = Encounter.query.get_or_404(encounter_id)
     if g.user.username != encounter.username:
         flash('Not authorized to do that.', 'danger')
@@ -244,6 +256,7 @@ def show_encounter(encounter_id):
 
 @app.route('/encounter/<int:encounter_id>/update', methods=['POST'])
 def update_encounter(encounter_id):
+    """Update encounter in DB"""
     encounter = Encounter.query.get_or_404(encounter_id)
     if g.user.username != encounter.username:
         flash('Not authorized to do that.', 'danger')
@@ -257,6 +270,7 @@ def update_encounter(encounter_id):
 
 @app.route('/encounter/<int:encounter_id>/delete', methods=['POST'])
 def delete_encounter(encounter_id):
+    """Delete encounter from DB"""
     encounter = Encounter.query.get_or_404(encounter_id)
     if g.user.username != encounter.username:
         flash('Not authorized to do that.', 'danger')
@@ -279,6 +293,7 @@ def set_logout():
         del session[CURR_USER_KEY]
 
 def get_next(json_response, results):
+    """If API response has 'next' key, add 'next' results to response"""
     if (json_response['next']):
         res = requests.get(f"{json_response['next']}")
         json = res.json()

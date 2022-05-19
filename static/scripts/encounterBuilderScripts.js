@@ -126,21 +126,21 @@ async function processParametersForm(evt) {
     evt.preventDefault()
     let selected = $('#enc-difficulty').val()
 
-    let difficulty = 0
+    let xp_total = 0
     if (selected === 'easy') {
-        difficulty = easyTotal
+        xp_total = easyTotal
     } else if (selected === 'medium') {
-        difficulty = mediumTotal
+        xp_total = mediumTotal
     } else if (selected === 'hard') {
-        difficulty = hardTotal
+        xp_total = hardTotal
     } else {
-        difficulty = deadlyTotal
+        xp_total = deadlyTotal
     }
 
     let density = $('#density').val()
 
     let data = {
-        difficulty: difficulty,
+        xp_total: xp_total,
         density: density,
     }
 
@@ -161,21 +161,21 @@ async function processParametersForm(evt) {
 async function updateCrs() {
     let selected = $('#enc-difficulty').val()
 
-    let difficulty = 0
+    let xp_total = 0
     if (selected === 'easy') {
-        difficulty = easyTotal
+        xp_total = easyTotal
     } else if (selected === 'medium') {
-        difficulty = mediumTotal
+        xp_total = mediumTotal
     } else if (selected === 'hard') {
-        difficulty = hardTotal
+        xp_total = hardTotal
     } else {
-        difficulty = deadlyTotal
+        xp_total = deadlyTotal
     }
 
     let density = $('#density').val()
 
     let data = {
-        difficulty: difficulty,
+        xp_total: xp_total,
         density: density
     }
 

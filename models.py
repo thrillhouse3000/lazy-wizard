@@ -49,7 +49,7 @@ class User(db.Model):
         nullable=False
     )
 
-    encounter = db.relationship('Encounter', cascade='all, delete', backref='users')
+    encounters = db.relationship('Encounter', cascade='all, delete', backref='users')
 
 class Encounter(db.Model):
 
