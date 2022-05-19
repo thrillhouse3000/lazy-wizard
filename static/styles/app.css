@@ -56,6 +56,11 @@ option {
 
 a {
     color: rgb(154, 24, 24);
+    cursor: pointer;
+}
+
+a [title] {
+    background-color: black;
 }
 
 .card .row {

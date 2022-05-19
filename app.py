@@ -119,17 +119,16 @@ def calculate_crs():
         counter[cr] += 1
     return jsonify(counter)
 
-
 @app.route('/encounter/add-name', methods=['POST'])
 def add_monster_name():
     data = request.json
     name = data['name']
-    name.replace(' ','%20').capitalize()
-    payload = {'name': str(name)}
-
+    caps = [word.capitalize() for word in name.split(' ')]
+    url_name = ' '.join(caps)
+    payload = {'name': str(url_name)}
+    print(url_name, payload)
     res = requests.get('https://api.open5e.com/monsters/', params=payload)
     json = res.json()
-    print(json)
     if json['results'] == []:
         err_dict = {'errors': {}}
         err_dict['errors']['invalid_name'] = "Couldn't find that monster."
@@ -171,7 +170,7 @@ def generate_encounter():
 
     if difficulty == 0 :
         err_dict = {'errors': {}}
-        err_dict['errors']['invalid_party'] = "You must create a party before generating an encounter."
+        err_dict['errors']['invalid_party'] = "You must gather your party before venturing forth."
         return jsonify(err_dict)
     else:
         crs = resources.convert_xp_to_cr(difficulty, density)

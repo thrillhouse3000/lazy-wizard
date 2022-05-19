@@ -68,6 +68,7 @@ async function processSearchForm(evt) {
     let type = $('#monster-type').val()
     let data = {challenge_rating: cr, type: type}
 
+    $('.warning').remove()
     $('#search-section').empty()
     loadingSpinner('#search-section')
     let resp = await axios.post('/encounter/search', data)

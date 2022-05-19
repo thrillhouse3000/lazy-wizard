@@ -98,7 +98,7 @@ function getTitle(num, i) {
 function getHp(monsterHp, num, i) {
     $(`#hp-${i}`).empty()
     for (let j = 0; j < num; j++) {
-        let el = `<p><b>HP</b> ${j+1}: <input type='text' value='${monsterHp}' size='1' > / ${monsterHp}</p>`
+        let el = `<p><b>HP</b> ${j+1}:  <input type='text' value='${monsterHp}' style='width: 2rem;'> / ${monsterHp}</p>`
         $(`#hp-${i}`).append(el)
     }
 }
@@ -156,28 +156,28 @@ function getSkills(monsters) {
 
 function getActions(monsters, i) {
     for (let action in monsters) {
-        let el = `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
+        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
         $(`#actions-${i}`).append(el)
     }
 }
 
 function getReactions(monsters, i) {
     for (let action in monsters) {
-        let el = `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
+        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
         $(`#reactions-${i}`).append(el)
     }
 }
 
 function getLegendaryActions(monsters, i) {
     for (let action in monsters) {
-        let el = `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
+        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
         $(`#legendary-actions-${i}`).append(el)
     }
 }
 
 function getSpecialAbilities(monsters, i) {
     for (let ability in monsters) {
-        let el = `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[ability]['desc']}">${monsters[ability]['name']}</a>`
+        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[ability]['desc']}">${monsters[ability]['name']}</a>`
         $(`#special-abilities-${i}`).append(el)
     }
 }
@@ -196,7 +196,7 @@ async function getSpells(monsters, i) {
 }
 
 function generateSpellHtml(spell) {
-    return `<a href="#" class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${spell.desc}">${spell.name}</a>`
+    return `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${spell.desc}">${spell.name}</a>`
 }
 
 function appendSpells(monsters, i) {
