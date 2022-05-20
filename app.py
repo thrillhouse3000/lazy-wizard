@@ -47,7 +47,7 @@ def homepage():
 def handle_registration():
     """Render and handle user registration form"""
     if g.user:
-        flash('You are already logged in.', 'danger')
+        flash('You are already logged in.', 'alert-danger')
         return redirect('/')
     else:
         form = RegisterForm()
@@ -61,7 +61,7 @@ def handle_registration():
                 form.username.errors.append('Username is already in use. Please choose a different one.')
                 return render_template('register.html', form=form)
             set_login(new_user)
-            flash ('Account created!', 'success')
+            flash ('Account created!', 'alert-success')
             return redirect(f'/users/{new_user.username}')
         return render_template('register.html', form=form)
 
@@ -69,7 +69,7 @@ def handle_registration():
 def handle_login():
     """Render and handle user login form"""
     if g.user:
-        flash('You are already logged in.', 'danger')
+        flash('You are already logged in.', 'alert-danger')
         return redirect('/')
     else:
         form = LoginForm()
@@ -79,7 +79,7 @@ def handle_login():
 
             if user:
                 set_login(user)
-                flash(f'Welcome back {user.username}!', 'success')
+                flash(f'Welcome back {user.username}!', 'alert-success')
                 return redirect(f'/users/{user.username}')
             else:
                 form.username.errors = ['Invalid Username/Password.']
@@ -89,7 +89,7 @@ def handle_login():
 def handle_logout():
     """Remove user from session"""
     set_logout()
-    flash('Successfully logged out!', 'success')
+    flash('Successfully logged out!', 'alert-success')
     return redirect('/')
 
 @app.route('/users/<username>')
@@ -97,7 +97,7 @@ def show_user_details(username):
     """Render user's details"""
     user = User.query.get_or_404(username)
     if g.user.username != user.username:
-        flash('Not authorized to do that.', 'danger')
+        flash('Not authorized to do that.', 'alert-danger')
         return redirect('/')
     else:
         return render_template('user_details.html', user=user)
@@ -219,7 +219,7 @@ def get_spells():
 def create_encounter():
     """Create encounter and upload to DB"""
     if not g.user:
-        flash('Must be logged in to do that.', 'danger')
+        flash('Must be logged in to do that.', 'alert-danger')
         return redirect('/')
     else:
         if request.form['monsters'] != '{}':
@@ -232,7 +232,7 @@ def create_encounter():
             flash('Nothing to save.', 'danger')
             return redirect(request.referrer)
         db.session.commit()
-        flash('Encounter saved!', 'success')
+        flash('Encounter saved!', 'alert-success')
         return redirect(f'/users/{g.user.username}')
 
 @app.route('/encounter/<int:encounter_id>', methods=['GET', 'POST'])
@@ -240,7 +240,7 @@ def show_encounter(encounter_id):
     """Render encounter template and retrieve encounter data"""
     encounter = Encounter.query.get_or_404(encounter_id)
     if g.user.username != encounter.username:
-        flash('Not authorized to do that.', 'danger')
+        flash('Not authorized to do that.', 'alert-danger')
         return redirect('/')
     else:
         if request.method == 'GET':
@@ -257,13 +257,13 @@ def update_encounter(encounter_id):
     """Update encounter in DB"""
     encounter = Encounter.query.get_or_404(encounter_id)
     if g.user.username != encounter.username:
-        flash('Not authorized to do that.', 'danger')
+        flash('Not authorized to do that.', 'alert-danger')
         return redirect('/')
     else:
         monsters = json.loads(request.form['monsters'])
         encounter.monsters = monsters
         db.session.commit()
-        flash('Encounter updated!', 'success')
+        flash('Encounter updated!', 'alert-success')
         return redirect(f'/users/{g.user.username}')
 
 @app.route('/encounter/<int:encounter_id>/delete', methods=['POST'])
@@ -271,7 +271,7 @@ def delete_encounter(encounter_id):
     """Delete encounter from DB"""
     encounter = Encounter.query.get_or_404(encounter_id)
     if g.user.username != encounter.username:
-        flash('Not authorized to do that.', 'danger')
+        flash('Not authorized to do that.', 'alert-danger')
         return redirect('/')
     else:
         db.session.delete(encounter)
