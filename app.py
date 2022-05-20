@@ -27,7 +27,7 @@ CURR_USER_KEY = 'curr-user'
 
 @app.before_request
 def add_user_to_g():
-    """If we're logged in, add curr user to Flask global."""
+    """If logged in, add curr user to global."""
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
 
@@ -36,6 +36,7 @@ def add_user_to_g():
 
 @app.route('/')
 def homepage():
+    """Render home page"""
     return render_template('home.html')
 
 
@@ -86,7 +87,7 @@ def handle_login():
 
 @app.route('/logout', methods=['POST'])
 def handle_logout():
-    """remove user_id from session"""
+    """Remove user from session"""
     set_logout()
     flash('Successfully logged out!', 'success')
     return redirect('/')
@@ -132,7 +133,6 @@ def add_monster_name():
     caps = [word.capitalize() for word in name.split(' ')]
     url_name = ' '.join(caps)
     payload = {'name': str(url_name)}
-    print(url_name, payload)
     res = requests.get('https://api.open5e.com/monsters/', params=payload)
     json = res.json()
     if json['results'] == []:
@@ -219,16 +219,14 @@ def get_spells():
 def create_encounter():
     """Create encounter and upload to DB"""
     if not g.user:
-        flash('Not authorized to do that.', 'danger')
+        flash('Must be logged in to do that.', 'danger')
         return redirect('/')
     else:
-        print(request.form)
         if request.form['monsters'] != '{}':
             title = request.form['title']
             monsters = json.loads(request.form['monsters'])
             username = g.user.username
             new_encounter = Encounter(title=title, monsters=monsters, username=username)
-            print(new_encounter)
             db.session.add(new_encounter)
         else:
             flash('Nothing to save.', 'danger')

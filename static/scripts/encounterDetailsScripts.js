@@ -7,15 +7,15 @@ $(document).ready(function(){
 async function loadMonsters() {
     let resp = await axios.post(`/encounter/${encounterId}`)
     let monsters = resp.data
+    loadingSpinner('#monster-section')
     await getMonsters(monsters)
+    endSpinner()
     appendMonsters(monsterTracker)
 }
 
 async function getMonsters(monsters) {
     for (let i in monsters) {
-        loadingSpinner('#monster-section')
         let resp = await axios.get(`https://api.open5e.com/monsters/?name=${i}`)
-        endSpinner()
         let monster = resp.data.results[0]
         monsterTracker[`${monster.slug}`] = {}
         monsterTracker[`${monster.slug}`]['count'] = parseInt(monsters[i])

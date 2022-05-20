@@ -78,10 +78,10 @@ function appendMonster(monster) {
 function getStats(monster, i) {
     getTitle(monsterTracker[`${monster.slug}`]['count'], i)
     getHp(monster.hit_points, monsterTracker[`${monster.slug}`]['count'], i)
-    getActions(monster.actions, i)
-    getReactions(monster.reactions, i)
-    getLegendaryActions(monster.legendary_actions, i)
-    getSpecialAbilities(monster.special_abilities, i)
+    getFeatures(monster.actions, '#actions', i)
+    getFeatures(monster.reactions, '#reactions', i)
+    getFeatures(monster.legendary_actions, '#legendary-actions', i)
+    getFeatures(monster.special_abilities, '#special-abilities', i)
     getSpells(monster.spell_list, i)
 }
 
@@ -154,31 +154,10 @@ function getSkills(monsters) {
     return str
 }
 
-function getActions(monsters, i) {
-    for (let action in monsters) {
-        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
-        $(`#actions-${i}`).append(el)
-    }
-}
-
-function getReactions(monsters, i) {
-    for (let action in monsters) {
-        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
-        $(`#reactions-${i}`).append(el)
-    }
-}
-
-function getLegendaryActions(monsters, i) {
-    for (let action in monsters) {
-        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[action]['desc']}">${monsters[action]['name']}</a>`
-        $(`#legendary-actions-${i}`).append(el)
-    }
-}
-
-function getSpecialAbilities(monsters, i) {
-    for (let ability in monsters) {
-        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${monsters[ability]['desc']}">${monsters[ability]['name']}</a>`
-        $(`#special-abilities-${i}`).append(el)
+function getFeatures(feature, targetEl, i) {
+    for (let item in feature) {
+        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${feature[item]['desc']}">${feature[item]['name']}</a>`
+        $(`${targetEl}-${i}`).append(el)
     }
 }
 

@@ -48,11 +48,20 @@ class UserRoutesTestCase(TestCase):
         with self.client as c:
             with c.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.user.username
-            res = c.get(f'/users/{self.user.username}')
+            res = c.get('/users/user')
 
             self.assertEqual(res.status_code, 200)
             self.assertIn("user\\\'s Profile", str(res.data))
             self.assertIn("test", str(res.data))
     
+    def test_unauthorized_user_details(self):
+        """Check unauthorized user details route"""
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.user2.username
+            res = c.get('/users/user', follow_redirects=True)
+
+            self.assertEqual(res.status_code, 200)
+            self.assertIn('Not authorized to do that.', str(res.data))
     
 
