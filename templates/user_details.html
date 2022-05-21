@@ -12,7 +12,7 @@
                 <div class="card" data-id="{{encounter.id}}">
                     <a href="/encounter/{{encounter.id}}" class="d-block">{{encounter.title}}</a>
                     <form action='/encounter/{{encounter.id}}/delete' class='encounter-delete-form' methods="POST">
-                        <button class="btn btn-sm btn-danger delete-btn">X</button>
+                        <button class="btn btn-sm btn-danger delete-btn">Delete Encounter</button>
                     </form>
                 </div>
             {% endfor %}
@@ -21,3 +21,5 @@
 
     <script src="/static/scripts/userDetailsScripts.js"></script>
 {% endblock %}
+
+{% include 'footer.html' %}

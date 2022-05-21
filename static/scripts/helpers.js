@@ -85,19 +85,19 @@ function getStats(monster, i) {
     getSpells(monster.spell_list, i)
 }
 
-function getTitle(num, i) {
-    if (num > 1) {
+function getTitle(count, i) {
+    if (count > 1) {
         $(`#monster-multiplier-${i}`).empty()
-        let multiplier = `<h6 class="card-title d-inline">(x${num})</h6>`
+        let multiplier = `<h6 class="card-title d-inline">(x${count})</h6>`
         $(`#monster-multiplier-${i}`).append(multiplier) 
     } else {
         $(`#monster-multiplier-${i}`).empty()
     }
 }
 
-function getHp(monsterHp, num, i) {
+function getHp(monsterHp, count, i) {
     $(`#hp-${i}`).empty()
-    for (let j = 0; j < num; j++) {
+    for (let j = 0; j < count; j++) {
         let el = `<p><b>HP</b> ${j+1}:  <input type='text' value='${monsterHp}' style='width: 2rem;'> / ${monsterHp}</p>`
         $(`#hp-${i}`).append(el)
     }
@@ -146,10 +146,10 @@ function getSaves(arr) {
     }
 }
 
-function getSkills(monsters) {
+function getSkills(skillsObj) {
     let str = ''
-    for (skill in monsters) {
-        str += `${skill} +${monsters[skill]} `
+    for (skill in skillsObj) {
+        str += `${skill} +${skillsObj[skill]} `
     }
     return str
 }
@@ -161,11 +161,11 @@ function getFeatures(feature, targetEl, i) {
     }
 }
 
-async function getSpells(monsters, i) {
+async function getSpells(spellsArr, i) {
     let data = {};
-    if (monsters.length) {
-        for (let j = 0; j < monsters.length; j++) {
-            data[`${j}`] = monsters[j]
+    if (spellsArr.length) {
+        for (let j = 0; j < spellsArr.length; j++) {
+            data[`${j}`] = spellsArr[j]
         }
         loadSpellSpinner(`#spell-list-${i}`)
         let resp = await axios.post('/encounter/spells', data)
@@ -178,10 +178,10 @@ function generateSpellHtml(spell) {
     return `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${spell.desc}">${spell.name}</a>`
 }
 
-function appendSpells(monsters, i) {
-    let keys = Object.keys(monsters)
+function appendSpells(spellsObj, i) {
+    let keys = Object.keys(spellsObj)
     for (let j = 0; j < keys.length; j++) {
-        let el = generateSpellHtml(monsters[j])
+        let el = generateSpellHtml(spellsObj[j])
         $(`#spell-list-${i}`).append(el)
     }
 }

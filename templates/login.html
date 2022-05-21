@@ -3,7 +3,7 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <div class="container d-flex flex-column vh-95 justify-content-center align-items-center">
+    <div class="container d-flex flex-column vh-90 justify-content-center align-items-center">
             <div class="card text-center user-card">
                 <form action="/login" method="POST" id="login-form">
                     <h4>Sign In</h4>
@@ -13,3 +13,5 @@
             </div>  
     </div>
 {% endblock %}
+
+{% include 'footer.html' %}

@@ -1,14 +1,14 @@
 from flask import Flask, request, render_template, redirect, flash, session, jsonify, g
+import os
+import requests
+import json
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Encounter
-import random
-from collections import Counter
-import requests
-import resources
-import json
-import os
 from forms import RegisterForm, LoginForm
+from collections import Counter
+import random
+import resources
 
 app = Flask(__name__)
 
@@ -30,7 +30,6 @@ def add_user_to_g():
     """If logged in, add curr user to global."""
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
-
     else:
         g.user = None
 
@@ -212,7 +211,6 @@ def get_spells():
         res = requests.get(url)
         spell = res.json()
         spells[f"{i}"] = spell
-    
     return jsonify(spells)
 
 @app.route('/encounter/create', methods=["POST"])
@@ -223,13 +221,17 @@ def create_encounter():
         return redirect('/')
     else:
         if request.form['monsters'] != '{}':
-            title = request.form['title']
-            monsters = json.loads(request.form['monsters'])
-            username = g.user.username
-            new_encounter = Encounter(title=title, monsters=monsters, username=username)
-            db.session.add(new_encounter)
+            try:
+                title = request.form['title']
+                monsters = json.loads(request.form['monsters'])
+                username = g.user.username
+                new_encounter = Encounter(title=title, monsters=monsters, username=username)
+                db.session.add(new_encounter)
+            except ValueError:
+                flash('Whoops, something went wrong. Try again!', 'alert-danger')
+                return redirect(request.referrer)
         else:
-            flash('Nothing to save.', 'danger')
+            flash('Nothing to save.', 'alert-danger')
             return redirect(request.referrer)
         db.session.commit()
         flash('Encounter saved!', 'alert-success')

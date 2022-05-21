@@ -10,28 +10,21 @@ function pcLvlSubmit(evt) {
     let lvl = $('#pc-lvl').val()
     $('#party').append(`<div class='party-icon d-inline-block mx-1 px-2'>Lvl ${lvl}</div>`)
     addExpBudget(lvl)
+    updateCrs()
 }
 
 function addExpBudget(lvl) {
     easyTotal += encounterDifficulty[`${lvl}`].easy
-    $('#easy-total').text(`Easy: ${easyTotal}`)
     mediumTotal += encounterDifficulty[`${lvl}`].medium
-    $('#medium-total').text(`Medium: ${mediumTotal}`)
     hardTotal += encounterDifficulty[`${lvl}`].hard
-    $('#hard-total').text(`Hard: ${hardTotal}`)
     deadlyTotal += encounterDifficulty[`${lvl}`].deadly
-    $('#deadly-total').text(`Deadly: ${deadlyTotal}`)
 }
 
 function subExpBudget(lvl) {
     easyTotal -= encounterDifficulty[`${lvl}`].easy
-    $('#easy-total').text(`Easy: ${easyTotal}`)
     mediumTotal -= encounterDifficulty[`${lvl}`].medium
-    $('#medium-total').text(`Medium: ${mediumTotal}`)
     hardTotal -= encounterDifficulty[`${lvl}`].hard
-    $('#hard-total').text(`Hard: ${hardTotal}`)
     deadlyTotal -= encounterDifficulty[`${lvl}`].deadly
-    $('#deadly-total').text(`Deadly: ${deadlyTotal}`)
 }
 
 function removeCharacter(evt) {
@@ -188,7 +181,7 @@ function printCrs(crCounter) {
     let el = $('#cr-section')
     el.empty()
     for (cr in crCounter) {
-        el.append(` (${crCounter[cr]}x CR-${cr}) `)
+        el.append(` (CR-${cr}:  ${crCounter[cr]} ) `)
     }
 }
 

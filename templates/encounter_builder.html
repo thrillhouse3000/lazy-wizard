@@ -5,17 +5,21 @@
 {% block content %}
 {% include 'encounter.html' %}
 
-<footer class="footer vh-5 bg-dark fixed-bottom text-center" id="builder-footer">
+<footer class="footer vh-5 bg-dark fixed-bottom d-flex justify-content-between align-items-center" id="builder-footer">
+    <span class='footer-span'>&copy; Lazy Wizard Enterprises</span>
     {% if g.user %}
-    <form action='/encounter/create' id='create-form' class="d-inline" method="POST">
-        <span class="text-white">Encounter Title: </span><input type="text" name="title" id="create-title" required="required">
-        <input type="hidden"  name='monsters' id='monsterRef'>
-        <button type="button" class="btn btn-sm btn-lw" id="create-btn">Create</button>
-    </form>
-    {% else %}
-        <p>Register and log in to save your encounters!</p>
-    {% endif %}
-    <span class="footer-errors warning"></span>
+    <div>
+        <form action='/encounter/create' id='create-form' class="d-inline" method="POST">
+            <span class="text-white">Encounter Title: </span><input type="text" name="title" id="create-title" required="required">
+            <input type="hidden"  name='monsters' id='monsterRef'>
+            <button type="button" class="btn btn-sm btn-lw" id="create-btn">Save</button>
+        </form>
+        {% else %}
+            <span class="scoot">Log in to save your encounters!</span>
+        {% endif %}
+        <span class="footer-errors alert-danger"></span>
+    </div>
+    <span class="footer-span">API powered by Open5e.com</span>
 </footer>
 
 <script src="/static/scripts/resources.js"></script>
