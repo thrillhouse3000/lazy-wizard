@@ -158,12 +158,7 @@ function getSkills(skillsObj) {
 
 function getFeatures(feature, targetEl, i) {
     for (let item in feature) {
-        let el = `<a class='mx-1' 
-                data-bs-toggle="tooltip" 
-                data-bs-placement="top"
-                data-bs-custom-class="custom-tooltip" 
-                title="${feature[item]['desc']}"
-                >${feature[item]['name']}</a>`
+        let el = $(`<a class='mx-1 feature' data-bs-toggle="tooltip" data-bs-placement="top" title="${feature[item]['desc']}">${feature[item]['name']}</a>`)
         $(`${targetEl}-${i}`).append(el)
     }
 }

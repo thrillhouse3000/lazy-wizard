@@ -246,7 +246,3 @@ a {
 		transform: rotate(360deg);
 	}
 }
-
-.custom-tooltip {
-    --bs-tooltip-bg: var(--bs-primary)
-}

@@ -16,16 +16,11 @@
         {% endif %}
         <span class="footer-span">API powered by Open5e.com</span>
     </footer>
-    
-    
+{% endblock %}
+
+{% block scripts %}
     <script src="/static/scripts/resources.js"></script>
     <script src="/static/scripts/helpers.js"></script>
     <script src="/static/scripts/encounterBuilderScripts.js"></script>
     <script src="/static/scripts/encounterDetailsScripts.js"></script>
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    </script>
 {% endblock %}
