@@ -15,7 +15,7 @@
             <button type="button" class="btn btn-sm btn-lw" id="create-btn">Save</button>
         </form>
         {% else %}
-            <span class="scoot">Log in to save your encounters!</span>
+            <span class="scoot">Register and Log in to save your encounters!</span>
         {% endif %}
         <span class="footer-errors alert-danger"></span>
     </div>
@@ -25,10 +25,4 @@
 <script src="/static/scripts/resources.js"></script>
 <script src="/static/scripts/helpers.js"></script>
 <script src="/static/scripts/encounterBuilderScripts.js"></script>
-<script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-</script>
 {% endblock %}

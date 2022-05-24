@@ -190,7 +190,7 @@ a {
 }
 
 .scoot {
-    margin-left: 15rem;
+    margin-left: 10rem;
 }
 
 /* animated spinner from https://loading.io/css/ */
@@ -247,5 +247,6 @@ a {
 	}
 }
 
-
-
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bs-primary)
+}

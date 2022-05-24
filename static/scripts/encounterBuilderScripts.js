@@ -43,7 +43,7 @@ async function processNameAddForm(evt) {
     let name = $('#monster-name').val()
     let data = {name: name}
     let resp = await axios.post('/encounter/add-name', data)
-    $('.warning').remove()
+    $('.alert-danger').remove()
     if (resp.data.errors) {
         showErrors('#monster-section', resp.data.errors)
     } else {
@@ -61,7 +61,7 @@ async function processSearchForm(evt) {
     let type = $('#monster-type').val()
     let data = {challenge_rating: cr, type: type}
 
-    $('.warning').remove()
+    $('.alert-danger').remove()
     $('#search-section').empty()
     loadingSpinner('#search-section')
     let resp = await axios.post('/encounter/search', data)
@@ -146,7 +146,7 @@ async function processParametersForm(evt) {
     } else {
         monsters = resp.data.monsters
         monsterTracker = {...monsters}
-        clearMonsters()
+        $('#monster-section').empty()
         appendMonsters(monsters)
     }
 }
@@ -189,32 +189,54 @@ $('#parameters-form').on('submit', processParametersForm)
 $('#enc-difficulty').on('change', updateCrs)
 $('#density').on('change', updateCrs)
 
-function removeMonster(evt) {
-    let el = $(evt.target).parent()
+function plusMonster(evt) {
+    let el = $(evt.target).closest($('.card'))
     let slug = el.data('slug')
     let monster = monsterTracker[slug]['data']
+    trackAndAppend(monster)
+}
 
+function subtractMonster(evt) {
+    let el = $(evt.target).closest($('.card'))
+    let slug = el.data('slug')
+    let monster = monsterTracker[slug]['data']
     if (monsterTracker[slug]['count'] > 1) {
         monsterTracker[slug]['count'] -= 1
         i = $(`h6:contains(${monster.name})`).data('id')
         getTitle(monsterTracker[slug]['count'], i)
         getHp(monsterTracker[slug]['data'].hit_points, monsterTracker[slug]['count'], i)
     } else {
-        delete monsterTracker[slug]
-        el.remove()
+        return 
     }
 }
 
+function removeMonster(evt) {
+    let el = $(evt.target).parent()
+    let slug = el.data('slug')
+    delete monsterTracker[slug]
+    el.remove()
+}
+
+$('#monster-section').on('click', '#plus-btn', plusMonster)
+$('#monster-section').on('click', '#minus-btn', subtractMonster)
 $('#monster-section').on('click', '.delete-btn', removeMonster)
 
+function createRef(callback) {
+    let monsterRef = getRef(monsterTracker)
+    $('#monsterRef').val(monsterRef)
+    callback();
+}
+
 function submitCreate() {
+    $('#create-form').submit()
+}
+
+async function createHandler() {
     if ($('#create-title').val() === '') {
         $('.footer-errors').text('Title required.')
     } else {
-        let monsterRef = getRef(monsterTracker)
-        $('#monsterRef').val(monsterRef)
-        $('#create-form').submit()
+        createRef(submitCreate)
     }
 }
 
-$('#create-btn').on('click', submitCreate)
+$('#create-btn').on('click', createHandler)

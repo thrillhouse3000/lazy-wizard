@@ -9,6 +9,7 @@ from forms import RegisterForm, LoginForm
 from collections import Counter
 import random
 import resources
+from route_functions import already_logged_in, login_required, is_author, authorized_user, get_next
 
 app = Flask(__name__)
 
@@ -33,56 +34,58 @@ def add_user_to_g():
     else:
         g.user = None
 
+def set_login(user):
+    """Log in user."""
+    session[CURR_USER_KEY] = user.username
+
+def set_logout():
+    """Logout user."""
+    if CURR_USER_KEY in session:
+        del session[CURR_USER_KEY]
+
+##Routes
+
 @app.route('/')
 def homepage():
     """Render home page"""
     return render_template('home.html')
 
-
 ##User Routes
 
-
 @app.route('/register', methods=['GET', 'POST'])
+@already_logged_in
 def handle_registration():
     """Render and handle user registration form"""
-    if g.user:
-        flash('You are already logged in.', 'alert-danger')
-        return redirect('/')
-    else:
-        form = RegisterForm()
-        if form.validate_on_submit():
-            data = {k:v for k, v in form.data.items() if k != 'csrf_token'}
-            new_user = User.register(**data)
-            db.session.add(new_user)
-            try:
-                db.session.commit()
-            except IntegrityError:
-                form.username.errors.append('Username is already in use. Please choose a different one.')
-                return render_template('register.html', form=form)
-            set_login(new_user)
-            flash ('Account created!', 'alert-success')
-            return redirect(f'/users/{new_user.username}')
-        return render_template('register.html', form=form)
+    form = RegisterForm()
+    if form.validate_on_submit():
+        data = {k:v for k, v in form.data.items() if k != 'csrf_token'}
+        new_user = User.register(**data)
+        db.session.add(new_user)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            form.username.errors.append('Username is already in use. Please choose a different one.')
+            return render_template('register.html', form=form)
+        set_login(new_user)
+        flash ('Account created!', 'alert-success')
+        return redirect(f'/users/{new_user.username}')
+    return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
+@already_logged_in
 def handle_login():
     """Render and handle user login form"""
-    if g.user:
-        flash('You are already logged in.', 'alert-danger')
-        return redirect('/')
-    else:
-        form = LoginForm()
-        if form.validate_on_submit():
-            data = {k:v for k, v in form.data.items() if k != 'csrf_token'}
-            user = User.authenticate(**data)
-
-            if user:
-                set_login(user)
-                flash(f'Welcome back {user.username}!', 'alert-success')
-                return redirect(f'/users/{user.username}')
-            else:
-                form.username.errors = ['Invalid Username/Password.']
-        return render_template('login.html', form=form)
+    form = LoginForm()
+    if form.validate_on_submit():
+        data = {k:v for k, v in form.data.items() if k != 'csrf_token'}
+        user = User.authenticate(**data)
+        if user:
+            set_login(user)
+            flash(f'Welcome back {user.username}!', 'alert-success')
+            return redirect(f'/users/{user.username}')
+        else:
+            form.username.errors = ['Invalid Username/Password.']
+    return render_template('login.html', form=form)
 
 @app.route('/logout', methods=['POST'])
 def handle_logout():
@@ -92,18 +95,14 @@ def handle_logout():
     return redirect('/')
 
 @app.route('/users/<username>')
+@login_required
+@authorized_user
 def show_user_details(username):
     """Render user's details"""
     user = User.query.get_or_404(username)
-    if g.user.username != user.username:
-        flash('Not authorized to do that.', 'alert-danger')
-        return redirect('/')
-    else:
-        return render_template('user_details.html', user=user)
+    return render_template('user_details.html', user=user)
 
-
-##Encounter Routes
-
+##Encounter API Routes
 
 @app.route('/encounter')
 def encounter_builder():
@@ -213,89 +212,66 @@ def get_spells():
         spells[f"{i}"] = spell
     return jsonify(spells)
 
+#Encounter CRUD routes
+
 @app.route('/encounter/create', methods=["POST"])
+@login_required
 def create_encounter():
     """Create encounter and upload to DB"""
-    if not g.user:
-        flash('Must be logged in to do that.', 'alert-danger')
-        return redirect('/')
-    else:
-        if request.form['monsters'] != '{}':
-            try:
-                title = request.form['title']
-                monsters = json.loads(request.form['monsters'])
-                username = g.user.username
-                new_encounter = Encounter(title=title, monsters=monsters, username=username)
-                db.session.add(new_encounter)
-            except ValueError:
-                flash('Whoops, something went wrong. Try again!', 'alert-danger')
-                return redirect(request.referrer)
-        else:
-            flash('Nothing to save.', 'alert-danger')
+    if request.form['monsters'] != '{}':
+        try:
+            title = request.form['title']
+            monsters = request.form['monsters']
+            monsters = json.loads(monsters)
+            username = g.user.username
+            new_encounter = Encounter(title=title, monsters=monsters, username=username)
+            db.session.add(new_encounter)
+        except ValueError:
+            flash('Whoops, something went wrong. Try again!', 'alert-danger')
             return redirect(request.referrer)
-        db.session.commit()
-        flash('Encounter saved!', 'alert-success')
-        return redirect(f'/users/{g.user.username}')
+    else:
+        flash('Nothing to save.', 'alert-danger')
+        return redirect(request.referrer)
+    db.session.commit()
+    flash('Encounter saved!', 'alert-success')
+    return redirect(f'/users/{g.user.username}')
 
 @app.route('/encounter/<int:encounter_id>', methods=['GET', 'POST'])
+@login_required
+@is_author
 def show_encounter(encounter_id):
     """Render encounter template and retrieve encounter data"""
     encounter = Encounter.query.get_or_404(encounter_id)
-    if g.user.username != encounter.username:
-        flash('Not authorized to do that.', 'alert-danger')
-        return redirect('/')
+    if request.method == 'GET':
+        encounter = Encounter.query.get_or_404(encounter_id)
+        creature_types = resources.creature_types
+        return render_template('encounter_details.html', encounter=encounter, creature_types=creature_types)
     else:
-        if request.method == 'GET':
-            encounter = Encounter.query.get_or_404(encounter_id)
-            creature_types = resources.creature_types
-            return render_template('encounter_details.html', encounter=encounter, creature_types=creature_types)
-        else:
-            encounter = Encounter.query.get_or_404(encounter_id)
-            monsters = encounter.monsters
-            return jsonify(monsters)
+        encounter = Encounter.query.get_or_404(encounter_id)
+        monsters = encounter.monsters
+        return jsonify(monsters)
 
 @app.route('/encounter/<int:encounter_id>/update', methods=['POST'])
+@login_required
+@is_author
 def update_encounter(encounter_id):
     """Update encounter in DB"""
     encounter = Encounter.query.get_or_404(encounter_id)
-    if g.user.username != encounter.username:
-        flash('Not authorized to do that.', 'alert-danger')
-        return redirect('/')
-    else:
-        monsters = json.loads(request.form['monsters'])
-        encounter.monsters = monsters
-        db.session.commit()
-        flash('Encounter updated!', 'alert-success')
-        return redirect(f'/users/{g.user.username}')
+    monsters = json.loads(request.form['monsters'])
+    encounter.monsters = monsters
+    db.session.commit()
+    flash('Encounter updated!', 'alert-success')
+    return redirect(f'/users/{g.user.username}')
 
 @app.route('/encounter/<int:encounter_id>/delete', methods=['POST'])
+@login_required
+@is_author
 def delete_encounter(encounter_id):
     """Delete encounter from DB"""
     encounter = Encounter.query.get_or_404(encounter_id)
-    if g.user.username != encounter.username:
-        flash('Not authorized to do that.', 'alert-danger')
-        return redirect('/')
-    else:
-        db.session.delete(encounter)
-        db.session.commit()
-        return redirect(f'/users/{g.user.username}')
+    db.session.delete(encounter)
+    db.session.commit()
+    return redirect(f'/users/{g.user.username}')
 
 
-## Route Functions
 
-def set_login(user):
-    """Log in user."""
-    session[CURR_USER_KEY] = user.username
-
-def set_logout():
-    """Logout user."""
-    if CURR_USER_KEY in session:
-        del session[CURR_USER_KEY]
-
-def get_next(json_response, results):
-    """If API response has 'next' key, add 'next' results to response"""
-    if (json_response['next']):
-        res = requests.get(f"{json_response['next']}")
-        json = res.json()
-        results += json['results']
-        get_next(json, results)

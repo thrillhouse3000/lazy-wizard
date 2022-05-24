@@ -2,12 +2,18 @@ function generateHtml(monster, i) {
     return `<div class="card mb-3 monster-card" data-slug='${monster.slug}'>
         <button class='me-0 btn btn-sm btn-danger delete-btn'>X</button>
         <div class="row" id='title-row'>
-            <div class="col">
+            <div class="col-5">
                 <div class="card-body">
                     <h6 class="card-text d-inline" id='monster-name-${i}' data-id='${i}'><b>${monster.name}</b></h6>
                     <span id='monster-multiplier-${i}'></span>
                 </div>
             </div>
+            <div class="col">
+                <div class="card-body">
+                    <button class='btn btn-sm btn-lw mx-2' id='plus-btn'>+</button>
+                    <button class='btn btn-sm btn-lw mx-2' id='minus-btn'>-</button>
+                </div>
+            </div>>
         </div>  
         <div class="row g-0">
             <div class="col-3">
@@ -53,10 +59,6 @@ function generateHtml(monster, i) {
             </div>
         </div>
     </div>`
-}
-
-function clearMonsters() {
-    $('#monster-section').empty()
 }
 
 function appendMonsters(monsters) {
@@ -156,7 +158,12 @@ function getSkills(skillsObj) {
 
 function getFeatures(feature, targetEl, i) {
     for (let item in feature) {
-        let el = `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${feature[item]['desc']}">${feature[item]['name']}</a>`
+        let el = `<a class='mx-1' 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" 
+                title="${feature[item]['desc']}"
+                >${feature[item]['name']}</a>`
         $(`${targetEl}-${i}`).append(el)
     }
 }

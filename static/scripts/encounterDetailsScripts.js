@@ -24,10 +24,18 @@ async function getMonsters(monsters) {
     }
 }
 
-function submitUpdate() {
+function createUpdateRef(callback){
     let monsterRef = getRef(monsterTracker)
     $('#monsterRef').val(monsterRef)
+    callback();
+}
+
+function submitUpdate() {
     $('#update-form').submit()
 }
 
-$('#update-btn').on('click', submitUpdate)
+function updateHandler() {
+    createUpdateRef(submitUpdate)
+}
+
+$('#update-btn').on('click', updateHandler)
