@@ -188,12 +188,12 @@ function appendSpells(spellsObj, i) {
     }
 }
 
-function getRef(monsterTracker) {
-    let monsterRef = {}
+function updateRef() {
+    monsterRef = {}
     for (let monster in monsterTracker) {
         monsterRef[monsterTracker[`${monster}`].name] = `${monsterTracker[monster].count}`
     }
-    return JSON.stringify(monsterRef)
+    $('#monsterRef').val(JSON.stringify(monsterRef))
 }
 
 function loadingSpinner(el){

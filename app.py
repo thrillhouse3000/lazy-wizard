@@ -224,6 +224,9 @@ def create_encounter():
         try:
             title = request.form['title']
             monsters = request.form['monsters']
+            print('********************')
+            print(f'title:{title}, monsters:{monsters}')
+            print('********************')
             monsters = json.loads(monsters)
             username = g.user.username
             new_encounter = Encounter(title=title, monsters=monsters, username=username)

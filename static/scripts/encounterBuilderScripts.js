@@ -4,6 +4,7 @@ let hardTotal = 0;
 let deadlyTotal = 0;
 let searchResults = {};
 let monsterTracker = {};
+let monsterRef = {};
 
 function pcLvlSubmit(evt) {
     evt.preventDefault()
@@ -112,7 +113,7 @@ function trackAndAppend(monster) {
         getTitle(monsterTracker[`${monster.slug}`]['count'], i)
         getHp(monsterTracker[`${monster.slug}`]['data'].hit_points, monsterTracker[`${monster.slug}`]['count'], i)
     }
-    
+    updateRef()
 }
 
 async function processParametersForm(evt) {
@@ -148,6 +149,7 @@ async function processParametersForm(evt) {
         monsterTracker = {...monsters}
         $('#monster-section').empty()
         appendMonsters(monsters)
+        updateRef()
     }
 }
 
@@ -205,6 +207,7 @@ function subtractMonster(evt) {
         i = $(`h6:contains(${monster.name})`).data('id')
         getTitle(monsterTracker[slug]['count'], i)
         getHp(monsterTracker[slug]['data'].hit_points, monsterTracker[slug]['count'], i)
+        updateRef()
     } else {
         return 
     }
@@ -214,6 +217,7 @@ function removeMonster(evt) {
     let el = $(evt.target).parent()
     let slug = el.data('slug')
     delete monsterTracker[slug]
+    updateRef()
     el.remove()
 }
 
@@ -221,21 +225,11 @@ $('#monster-section').on('click', '#plus-btn', plusMonster)
 $('#monster-section').on('click', '#minus-btn', subtractMonster)
 $('#monster-section').on('click', '.delete-btn', removeMonster)
 
-function createRef(callback) {
-    let monsterRef = getRef(monsterTracker)
-    $('#monsterRef').val(monsterRef)
-    callback();
-}
-
-function submitCreate() {
-    $('#create-form').submit()
-}
-
 async function createHandler() {
     if ($('#create-title').val() === '') {
         $('.footer-errors').text('Title required.')
     } else {
-        createRef(submitCreate)
+        $('#create-form').submit()
     }
 }
 
