@@ -13,7 +13,7 @@ from route_functions import already_logged_in, login_required, is_author, author
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = (os.environ.get('DATABASE_URL', 'postgresql:///lazy_wizard'))
+app.config['SQLALCHEMY_DATABASE_URI'] = (os.environ.get('DATABASE_URL'.replace("://", "ql://", 1), 'postgresql:///lazy_wizard'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "keepitsecretkeepitsafe")
