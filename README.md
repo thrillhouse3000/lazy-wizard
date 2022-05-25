@@ -2,13 +2,15 @@
 
 The Lazy Wizard encounter generator uses the open5e API (https://api.open5e.com) to contsruct balanced encounters for Dungeons and Dragons 5e campaigns. Encounters can be built manually or generated randomly from the application.
 
+This application is delpoyed at https://lazy-wizard.herokuapp.com/
+
 # TECHNOLOGIES
 
-Python
-Flask
-Javascript
-HTML
-CSS
+- Python
+- Flask
+- Javascript
+- HTML
+- CSS
 
 # REQUIREMENTS
 
