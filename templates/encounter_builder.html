@@ -4,7 +4,7 @@
 
 {% block content %}
 {% include 'encounter.html' %}
-<footer class="footer vh-5 bg-dark fixed-bottom d-flex justify-content-between align-items-center" id="builder-footer">
+<footer class="footer bg-dark fixed-bottom d-flex justify-content-between align-items-center" id="builder-footer">
     <span class='footer-span'>&copy; Lazy Wizard Enterprises</span>
     {% if g.user %}
     <div>
@@ -14,7 +14,7 @@
             <button type="button" class="btn btn-sm btn-lw" id="create-btn">Save</button>
         </form>
         {% else %}
-            <span class="scoot">Register and Log in to save your encounters!</span>
+            <span>Register and Log in to save your encounters!</span>
         {% endif %}
         <span class="footer-errors alert-danger"></span>
     </div>
