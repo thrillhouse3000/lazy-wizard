@@ -221,3 +221,27 @@ function showErrors(targetEl, errors) {
         $(targetEl).append(el)
     }
 }
+
+function setMaxHeightSearch() {
+    if ($(window).width() > 991) {
+        let remainingHeight = $(window).height() - ($('nav').height() + $('.top-row').height() + $('.search-form-div').height() + $('.footer').height() + 16)
+        $('.search-div').css({'max-height': remainingHeight})
+    } else {
+        $('.search-div').css({'max-height': '20vh'})
+    }
+}
+
+function setMaxHeightMonsters() {
+    if ($(window).width() > 991) {
+        let remainingHeight = $(window).height() - ($('nav').height() + $('.top-row').height() + $('.monster-header').height() + $('.footer').height()+ 24)
+        $('#monster-section').css({'max-height': remainingHeight})
+    } else {
+        $('#monster-section').css({'max-height': 'none'})
+    }
+}
+
+
+setMaxHeightSearch()
+setMaxHeightMonsters()
+$(window).on('resize', setMaxHeightSearch)
+$(window).on('resize', setMaxHeightMonsters)

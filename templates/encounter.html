@@ -1,5 +1,5 @@
 {% block content %}
-<div class="container-fluid h-100 vw-100 text-center">
+<div class="container-fluid h-100 text-center">
     <div class="row top-row h-100 d-flex justify-content-between">
         <div class="col-lg h-100">
             <h5><span class="num-header">1)</span> Create your party:</h5>
@@ -48,24 +48,26 @@
     </div>
     <div class="row bottom-row h-100">
         <div class="col-lg-3 h-100">
-            <h5><span class="num-header">4)</span> Search by Type and CR:</h5>
-            <form id="monster-search-form" method="POST">
-                <div class="d-inline">
-                    <label for="cr" class="form-label">CR:</label>
-                    <input type="text" name="cr" id="monster-cr" style="width: 2rem;">
-                </div>
-                <div class="d-inline">
-                    <label for="type" class="form-label">Monster Type:</label>
-                    <select name="type" id="monster-type">
-                        {% for c in creature_types %}
-                            <option value="{{c}}">{{c|capitalize}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <button class="btn btn-sm mb-1 btn-lw" id="search-btn">Search</button>
-            </form>
-            <div class="search-div d-flex mh-100 justify-content-center">
-                <ul class='d-flex flex-column align-items-stretch mh-100' id="search-section"></ul>
+            <div class="search-form-div">
+                <h5><span class="num-header">4)</span> Search by Type and CR:</h5>
+                <form id="monster-search-form" method="POST">
+                    <div class="d-inline">
+                        <label for="cr" class="form-label">CR:</label>
+                        <input type="text" name="cr" id="monster-cr" style="width: 2rem;">
+                    </div>
+                    <div class="d-inline">
+                        <label for="type" class="form-label">Monster Type:</label>
+                        <select name="type" id="monster-type">
+                            {% for c in creature_types %}
+                                <option value="{{c}}">{{c|capitalize}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-sm mb-1 btn-lw" id="search-btn">Search</button>
+                </form>
+            </div>
+            <div class="search-div d-flex justify-content-center">
+                <ul id="search-section"></ul>
             </div>
         </div>
         <div class="col-lg-9 h-100" id="main-col">
