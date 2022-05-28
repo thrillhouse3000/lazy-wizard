@@ -1,7 +1,7 @@
 {% block content %}
-<div class="container-fluid h-100 text-center">
-    <div class="row top-row h-100">
-        <div class="col-lg">
+<div class="container-fluid h-100 vw-100 text-center">
+    <div class="row top-row h-100 d-flex justify-content-between">
+        <div class="col-lg h-100">
             <h5><span class="num-header">1)</span> Create your party:</h5>
             <form class='mb-2' id="pc-lvl-form">
                 <label for="pc-lvl">Player Level:</label>
@@ -14,7 +14,7 @@
             </form>
             <div id="party"></div>
         </div>
-        <div class="col-lg">
+        <div class="col-lg-6 h-100">
             <h5><span class="num-header">2)</span> Calculate Encounter Challenge Ratings:</h5>
             <form id="parameters-form" method="POST">
                 <div>
@@ -36,11 +36,11 @@
             </form>
             <p>CR List:<span id="cr-section"></span></p>
         </div>
-        <div class="col-lg">
-            <h5><span class="num-header">3)</span> Add Monsters or Generate an Encounter:</h5>
+        <div class="col-lg h-100">
+            <h5><span class="num-header">3)</span> Add or Generate Encounter:</h5>
             <form id="monster-name-add-form" method="POST">
                 <label for="name" class="form-label">Monster by Name:</label>
-                <input type="text" name="name" id="monster-name">
+                <input type="text" name="name" id="monster-name" style="width: 11rem;">
                 <button class="btn btn-sm btn-lw" id="add-btn">Add</button>
             </form>
             <input type='submit' form='parameters-form' id="generate-btn" class="btn btn-sm btn-lw my-1" value='Generate Random Encounter'/>
@@ -64,11 +64,11 @@
                 </div>
                 <button class="btn btn-sm mb-1 btn-lw" id="search-btn">Search</button>
             </form>
-            <div class="search-div">
-                <ul id="search-section"></ul>
+            <div class="search-div d-flex mh-100 justify-content-center">
+                <ul class='d-flex flex-column align-items-stretch mh-100' id="search-section"></ul>
             </div>
         </div>
-        <div class="col-lg h-100" id="main-col">
+        <div class="col-lg-9 h-100" id="main-col">
             <h4 class="monster-header"><u>Monsters</u></h4>
             <div class="text-start mt-2" id="monster-section"></div>
         </div>  
