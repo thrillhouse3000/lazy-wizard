@@ -19,14 +19,6 @@ body {
     border-radius: 10px;
 }
 
-.vh-5 {
-    height: 5vh;
-}
-
-.vh-90 {
-    height: 90vh;
-}
-
 .num-header {
     font-size: x-large;
 }
@@ -155,6 +147,7 @@ a {
     margin: 0;
     padding: 0;
     overflow: auto;
+    width: 100%;
 }
 
 #search-section li {

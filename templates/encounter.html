@@ -15,7 +15,7 @@
             <div id="party"></div>
         </div>
         <div class="col-lg-6 h-100">
-            <h5><span class="num-header">2)</span> Calculate Encounter Challenge Ratings:</h5>
+            <h5><span class="num-header">2)</span> Calculate Challenge Ratings:</h5>
             <form id="parameters-form" method="POST">
                 <div>
                     <label for="enc-difficulty" class="form-label">Difficulty:</label>
@@ -39,8 +39,7 @@
         <div class="col-lg h-100">
             <h5><span class="num-header">3)</span> Add or Generate Encounter:</h5>
             <form id="monster-name-add-form" method="POST">
-                <label for="name" class="form-label">Monster by Name:</label>
-                <input type="text" name="name" id="monster-name" style="width: 11rem;">
+                <input type="text" name="name" id="monster-name" style="width: 10rem;" placeholder="Monster Name">
                 <button class="btn btn-sm btn-lw" id="add-btn">Add</button>
             </form>
             <input type='submit' form='parameters-form' id="generate-btn" class="btn btn-sm btn-lw my-1" value='Generate Random Encounter'/>
