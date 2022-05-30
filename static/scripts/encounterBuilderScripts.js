@@ -113,6 +113,7 @@ function trackAndAppend(monster) {
         monsterTracker[`${monster.slug}`]['name'] = monster.name
         monsterTracker[`${monster.slug}`]['data'] = monster
         appendMonster(monster)
+        enablePopovers()
     } else {
         monsterTracker[`${monster.slug}`]['count'] += 1
         i = $(`h6:contains(${monster.name})`).data('id')
@@ -243,4 +244,5 @@ $('#create-btn').on('click', createHandler)
 
 $(document).bind('DOMNodeInserted', setMaxHeightSearch)
 $(document).bind('DOMNodeInserted', setMaxHeightMonsters)
-$(document).bind('DOMNodeRemoved', setMaxHeightMonsters)
+
+

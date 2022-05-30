@@ -180,7 +180,6 @@ async function getSpells(spellsArr, i) {
 }
 
 function generateSpellHtml(spell) {
-    // return `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${spell.desc}">${spell.name}</a>`
     return `<a tabindex="0" class='mx-1 feature' role="button" data-bs-toggle="popover" data-bs-container="body" data-bs-trigger="focus" title="${spell.name}" data-bs-content="${spell.desc}">${spell.name}</a>`
 }
 
@@ -190,7 +189,6 @@ function appendSpells(spellsObj, i) {
         let el = generateSpellHtml(spellsObj[j])
         $(`#spell-list-${i}`).append(el)
     }
-    enableTooltips()
 }
 
 function updateRef() {
@@ -245,16 +243,10 @@ function setMaxHeightMonsters() {
     }
 }
 
-
 setMaxHeightSearch()
 setMaxHeightMonsters()
 $(window).on('resize', setMaxHeightSearch)
 $(window).on('resize', setMaxHeightMonsters)
-
-function enableTooltips() {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-}
 
 function enablePopovers() {
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
