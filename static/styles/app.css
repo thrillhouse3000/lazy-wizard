@@ -78,8 +78,6 @@ a {
 .left-col {
     background-color: rgba(0, 0, 0, 0.5);
     min-height: calc(100vh - 80px);
-    height: 100vh;
-
 }
 
 .left-col-div {
@@ -240,9 +238,12 @@ a {
 
 
 .lds-dual-ring {
-    position: fixed;
-    top: 45%;
-    left: 45%;
+    position: absolute;
+    left: 0; 
+    right: 0;
+    top: calc(50% - 100px); 
+    margin-left: auto; 
+    margin-right: auto;
 	display: block;
 	width: 200px;
 	height: 200px;
@@ -255,8 +256,8 @@ a {
 	height: 200px;
     z-index: 9999;
 	border-radius: 50%;
-	border: 20px solid rgba(0, 0, 0, 0.7);
-	border-color: rgba(0, 0, 0, 0.7) transparent rgba(0, 0, 0, 0.7) transparent;
+	border: 20px solid rgba(0, 0, 0, 0.8);
+	border-color: rgba(0, 0, 0, 0.8) transparent rgba(0, 0, 0, 0.8) transparent;
 	animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {
@@ -315,5 +316,8 @@ a {
     }
     #monster-section {
         margin-bottom: 2rem;
+    }
+    .left-col {
+        min-height: fit-content;
     }
 }
