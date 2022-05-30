@@ -1,54 +1,61 @@
 {% block content %}
 <div class="container-fluid h-100 text-center">
-    <div class="row top-row h-100 d-flex justify-content-between">
-        <div class="col-lg h-100">
-            <h5><span class="num-header">1)</span> Create your party:</h5>
-            <form class='mb-2' id="pc-lvl-form">
-                <label for="pc-lvl">Player Level:</label>
-                <select name="pc-lvl" id="pc-lvl">
-                    {% for n in range(1,21) %}
-                        <option value="{{n}}">{{n}}</option>
-                    {% endfor %}
-                </select>
-                <button class="btn btn-sm btn-lw">Add Player</button>
-            </form>
-            <div id="party"></div>
-        </div>
-        <div class="col-lg-6 h-100">
-            <h5><span class="num-header">2)</span> Calculate Challenge Ratings:</h5>
-            <form id="parameters-form" method="POST">
+    <div class="row h-100 d-flex justify-content-between">
+        <div class="col-lg h-100 left-col">
+            <div id="party-div" class="left-col-div">
+                <span class="num-header">1. </span><h5>Create your party:</h5>
+                <form class='mb-2' id="pc-lvl-form">
+                    <label for="pc-lvl">Player Level:</label>
+                    <select name="pc-lvl" id="pc-lvl">
+                        {% for n in range(1,21) %}
+                            <option value="{{n}}">{{n}}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-sm btn-lw">Add Player</button>
+                </form>
+                <div class='my-2' id="party"></div>
+            </div>
+
+            <div id="calc-cr-div" class="left-col-div">
+                <span class="num-header">2. </span><h5>Calculate Challenge Ratings:</h5>
+                <form id="parameters-form" method="POST">
+                    <div>
+                        <label for="enc-difficulty" class="form-label">Difficulty:</label>
+                        <select name="enc-difficulty" id="enc-difficulty">
+                            <option value="easy">Easy (9+ / day)</option>
+                            <option value="medium">Medium (6-8 / day)</option>
+                            <option value="hard">Hard (6-8 / day)</option>
+                            <option value="deadly">Deadly (sparingly)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="density" class="form-label">Density:</label>
+                        <select name="density" id="density">
+                            <option value="one">One</option>
+                            <option value="few">Few</option>
+                            <option value="many">Many</option>
+                            <option value="horde">Horde</option>
+                        </select>
+                    </div>
+                </form>
                 <div>
-                    <label for="enc-difficulty" class="form-label">Difficulty:</label>
-                    <select name="enc-difficulty" id="enc-difficulty">
-                        <option value="easy">Easy (9+ / day)</option>
-                        <option value="medium">Medium (6-8 / day)</option>
-                        <option value="hard">Hard (6-8 / day)</option>
-                        <option value="deadly">Deadly (sparingly)</option>
-                    </select>
-                    <label for="density" class="form-label">Density:</label>
-                    <select name="density" id="density">
-                        <option value="one">One</option>
-                        <option value="few">Few</option>
-                        <option value="many">Many</option>
-                        <option value="horde">Horde</option>
-                    </select>
+                    <p>CR List:</p>
+                    <p class='my-1' id="cr-section"></p>
                 </div>
-            </form>
-            <p>CR List:<span id="cr-section"></span></p>
-        </div>
-        <div class="col-lg h-100">
-            <h5><span class="num-header">3)</span> Add or Generate Encounter:</h5>
-            <form id="monster-name-add-form" method="POST">
-                <input type="text" name="name" id="monster-name" style="width: 10rem;" placeholder="Monster Name">
-                <button class="btn btn-sm btn-lw" id="add-btn">Add</button>
-            </form>
-            <input type='submit' form='parameters-form' id="generate-btn" class="btn btn-sm btn-lw my-1" value='Generate Random Encounter'/>
-        </div>
-    </div>
-    <div class="row bottom-row h-100">
-        <div class="col-lg-3 h-100">
-            <div class="search-form-div">
-                <h5><span class="num-header">4)</span> Search by Type and CR:</h5>
+            </div>
+
+            <div id="generate-encounter-div" class="left-col-div">
+                <span class="num-header">3. </span><h5>Generate Encounter:</h5>
+                <input type='submit' form='parameters-form' id="generate-btn" class="btn btn-sm btn-lw my-2" value='Generate Random Encounter'/>
+            </div>
+
+            <div id="search-form-div" class="left-col-div">
+                <span class="num-header">4. </span><h5>Add by Name / Search by Type and CR:</h5>
+                <form id="monster-name-add-form" method="POST">
+                    <label for="monster-name" class="form-label">Monster Name:</label>
+                    <input type="text" name="name" id="monster-name">
+                    <button class="btn btn-sm btn-lw" id="add-btn">Add</button>
+                </form>
                 <form id="monster-search-form" method="POST">
                     <div class="d-inline">
                         <label for="cr" class="form-label">CR:</label>
@@ -62,7 +69,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <button class="btn btn-sm mb-1 btn-lw" id="search-btn">Search</button>
+                    <button class="btn btn-sm mb-1 btn-lw d-inline" id="search-btn">Search</button>
                 </form>
             </div>
             <div class="search-div d-flex justify-content-center">
@@ -70,7 +77,7 @@
             </div>
         </div>
         <div class="col-lg-9 h-100" id="main-col">
-            <h4 class="monster-header"><u>Monsters</u></h4>
+            <h5 class="monster-header">Monsters</h5>
             <div class="text-start mt-2" id="monster-section"></div>
         </div>  
     </div>

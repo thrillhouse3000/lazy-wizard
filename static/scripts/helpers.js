@@ -68,6 +68,7 @@ function appendMonsters(monsters) {
         $('#monster-section').append(el)
         getStats(monsters[`${keys[i]}`]['data'], i)
     }
+    enablePopovers()
 }
 
 function appendMonster(monster) {
@@ -75,6 +76,7 @@ function appendMonster(monster) {
     let el = generateHtml(monster, i)
     $('#monster-section').append(el)
     getStats(monster, i)
+    enablePopovers()
 }
 
 function getStats(monster, i) {
@@ -158,7 +160,7 @@ function getSkills(skillsObj) {
 
 function getFeatures(feature, targetEl, i) {
     for (let item in feature) {
-        let el = $(`<a class='mx-1 feature' data-bs-toggle="tooltip" data-bs-placement="top" title="${feature[item]['desc']}">${feature[item]['name']}</a>`)
+        let el = $(`<a tabindex="0" class='mx-1 feature' role="button" data-bs-toggle="popover" data-bs-container="body" data-bs-trigger="focus" title="${feature[item]['name']}" data-bs-content="${feature[item]['desc']}">${feature[item]['name']}</a>`)
         $(`${targetEl}-${i}`).append(el)
     }
 }
@@ -174,10 +176,12 @@ async function getSpells(spellsArr, i) {
         endSpellSpinner()
         appendSpells(resp.data, i)
     }
+    enablePopovers()
 }
 
 function generateSpellHtml(spell) {
-    return `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${spell.desc}">${spell.name}</a>`
+    // return `<a class='mx-1' data-bs-toggle="tooltip" data-bs-placement="top" title="${spell.desc}">${spell.name}</a>`
+    return `<a tabindex="0" class='mx-1 feature' role="button" data-bs-toggle="popover" data-bs-container="body" data-bs-trigger="focus" title="${spell.name}" data-bs-content="${spell.desc}">${spell.name}</a>`
 }
 
 function appendSpells(spellsObj, i) {
@@ -186,6 +190,7 @@ function appendSpells(spellsObj, i) {
         let el = generateSpellHtml(spellsObj[j])
         $(`#spell-list-${i}`).append(el)
     }
+    enableTooltips()
 }
 
 function updateRef() {
@@ -224,7 +229,7 @@ function showErrors(targetEl, errors) {
 
 function setMaxHeightSearch() {
     if ($(window).width() > 991) {
-        let remainingHeight = $(window).height() - ($('nav').height() + $('.top-row').height() + $('.search-form-div').height() + $('.footer').height() + 16)
+        let remainingHeight = $(window).height() - ($('#party-div').height() + $('#generate-encounter-div').height() + $('#search-form-div').height() + $('#calc-cr-div').height() + 84)
         $('.search-div').css({'max-height': remainingHeight})
     } else {
         $('.search-div').css({'max-height': '20vh'})
@@ -233,7 +238,7 @@ function setMaxHeightSearch() {
 
 function setMaxHeightMonsters() {
     if ($(window).width() > 991) {
-        let remainingHeight = $(window).height() - ($('nav').height() + $('.top-row').height() + $('.monster-header').height() + $('.footer').height()+ 24)
+        let remainingHeight = $(window).height() - ($('.monster-header').height() + 88)
         $('#monster-section').css({'max-height': remainingHeight})
     } else {
         $('#monster-section').css({'max-height': 'none'})
@@ -245,3 +250,17 @@ setMaxHeightSearch()
 setMaxHeightMonsters()
 $(window).on('resize', setMaxHeightSearch)
 $(window).on('resize', setMaxHeightMonsters)
+
+function enableTooltips() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+}
+
+function enablePopovers() {
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+    const popover = new bootstrap.Popover('.popover-dismiss', {
+        trigger: 'focus'
+      })
+}
+

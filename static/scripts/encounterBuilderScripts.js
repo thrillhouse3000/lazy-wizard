@@ -2,6 +2,7 @@ let easyTotal = 0;
 let mediumTotal = 0;
 let hardTotal = 0;
 let deadlyTotal = 0;
+let xp_total = 0;
 let searchResults = {};
 let monsterTracker = {};
 let monsterRef = {};
@@ -33,6 +34,11 @@ function removeCharacter(evt) {
     let lvl = el.text().slice(-1)
     el.remove()
     subExpBudget(lvl)
+    updateCrs()
+    if(xp_total === 0) {
+        $('#cr-section').text('')
+    }
+    setMaxHeightSearch()
 }
 
 $('#pc-lvl-form').on('submit', pcLvlSubmit)
@@ -120,7 +126,7 @@ async function processParametersForm(evt) {
     evt.preventDefault()
     let selected = $('#enc-difficulty').val()
 
-    let xp_total = 0
+    xp_total = 0
     if (selected === 'easy') {
         xp_total = easyTotal
     } else if (selected === 'medium') {
@@ -156,7 +162,7 @@ async function processParametersForm(evt) {
 async function updateCrs() {
     let selected = $('#enc-difficulty').val()
 
-    let xp_total = 0
+    xp_total = 0
     if (selected === 'easy') {
         xp_total = easyTotal
     } else if (selected === 'medium') {
@@ -234,3 +240,7 @@ async function createHandler() {
 }
 
 $('#create-btn').on('click', createHandler)
+
+$(document).bind('DOMNodeInserted', setMaxHeightSearch)
+$(document).bind('DOMNodeInserted', setMaxHeightMonsters)
+$(document).bind('DOMNodeRemoved', setMaxHeightMonsters)
