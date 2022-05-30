@@ -229,7 +229,7 @@ function showErrors(targetEl, errors) {
 
 function setMaxHeightSearch() {
     if ($(window).width() > 991) {
-        let remainingHeight = $(window).height() - ($('#party-div').height() + $('#generate-encounter-div').height() + $('#search-form-div').height() + $('#calc-cr-div').height() + 84)
+        let remainingHeight = $(window).height() - ($('#party-div').height() + $('#generate-encounter-div').height() + $('#search-form-div').height() + $('#calc-cr-div').height() + $('footer').height() + 60)
         $('.search-div').css({'max-height': remainingHeight})
     } else {
         $('.search-div').css({'max-height': '20vh'})
@@ -238,7 +238,7 @@ function setMaxHeightSearch() {
 
 function setMaxHeightMonsters() {
     if ($(window).width() > 991) {
-        let remainingHeight = $(window).height() - ($('.monster-header').height() + 88)
+        let remainingHeight = $(window).height() - ($('.monster-header').height() + $('footer').height() + 64)
         $('#monster-section').css({'max-height': remainingHeight})
     } else {
         $('#monster-section').css({'max-height': 'none'})
