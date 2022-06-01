@@ -2,13 +2,13 @@ function generateHtml(monster, i) {
     return `<div class="card mb-3 monster-card" data-slug='${monster.slug}'>
         <button class='me-0 btn btn-sm btn-danger delete-btn'>X</button>
         <div class="row" id='title-row'>
-            <div class="col-5">
+            <div class="col-lg-5">
                 <div class="card-body">
                     <h6 class="card-text d-inline" id='monster-name-${i}' data-id='${i}'><b><span class='first-letter'>${monster.name[0]}</span>${monster.name.substring(1)}</b></h6>
                     <span id='monster-multiplier-${i}'></span>
                 </div>
             </div>
-            <div class="col">
+            <div class="col-lg">
                 <div class="card-body">
                     <button class='btn btn-sm btn-lw mx-2' id='plus-btn'>+</button>
                     <button class='btn btn-sm btn-lw mx-2' id='minus-btn'>-</button>
@@ -16,7 +16,7 @@ function generateHtml(monster, i) {
             </div>>
         </div>  
         <div class="row g-0">
-            <div class="col-3">
+            <div class="col-lg-3">
                 <div class="card-body">
                     <p class="card-text"><b>CR ${monster.challenge_rating}</b> ${monster.size} ${monster.type}, ${monster.alignment}</p>
                     <p class="card-text"><b>AC</b> ${monster.armor_class}</p>
@@ -24,7 +24,7 @@ function generateHtml(monster, i) {
                     ${monster.languages ? `<p class="card-text"><b>Languages</b> ${monster.languages}</p>` : ''}
                 </div>
             </div>
-            <div class="col-7">
+            <div class="col-lg-7">
                 <div class="card-body">
                     <p class="card-text d-inline"><b>STR</b> ${monster.strength} (${getMod(monster.strength)})</p>
                     <p class="card-text d-inline"><b>DEX</b> ${monster.dexterity} (${getMod(monster.dexterity)})</p>
@@ -41,7 +41,7 @@ function generateHtml(monster, i) {
                     ${monster.condition_immunities ? `<p class="card-text"><b>Condition Immunities</b> ${monster.condition_immunities}</p>` : ''}
                 </div>
             </div>
-            <div class="col-2">
+            <div class="col-lg-2">
                 <div class="card-body text-center" id='hp-${i}'>
                 </div>
             </div>
@@ -102,7 +102,7 @@ function getTitle(count, i) {
 function getHp(monsterHp, count, i) {
     $(`#hp-${i}`).empty()
     for (let j = 0; j < count; j++) {
-        let el = `<p><b>HP</b> ${j+1}:  <input type='text' value='${monsterHp}' style='width: 2rem;'> / ${monsterHp}</p>`
+        let el = `<p class='hp-block'><b>HP</b> ${j+1}:  <input type='text' value='${monsterHp}' style='width: 2rem;'> / ${monsterHp}</p>`
         $(`#hp-${i}`).append(el)
     }
 }
