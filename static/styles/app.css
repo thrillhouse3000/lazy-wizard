@@ -316,6 +316,12 @@ a {
     }
 }
 
+@media (max-width: 400px) {
+    footer {
+        font-size: 0.4rem;
+    }
+}
+
 @media (max-width: 991px) {
     #search-section {
         text-align: center;

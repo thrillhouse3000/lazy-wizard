@@ -26,12 +26,12 @@ function generateHtml(monster, i) {
             </div>
             <div class="col-lg-7">
                 <div class="card-body">
-                    <p class="card-text d-inline"><b>STR</b> ${monster.strength} (${getMod(monster.strength)})</p>
-                    <p class="card-text d-inline"><b>DEX</b> ${monster.dexterity} (${getMod(monster.dexterity)})</p>
-                    <p class="card-text d-inline"><b>CON</b> ${monster.constitution} (${getMod(monster.constitution)})</p>
-                    <p class="card-text d-inline"><b>INT</b> ${monster.intelligence} (${getMod(monster.intelligence)})</p>
-                    <p class="card-text d-inline"><b>WIS</b> ${monster.wisdom} (${getMod(monster.wisdom)})</p>
-                    <p class="card-text d-inline"><b>CHA</b> ${monster.charisma} (${getMod(monster.charisma)})</p>
+                    <p class="card-text d-inline-block"><b>STR</b> ${monster.strength} (${getMod(monster.strength)})</p>
+                    <p class="card-text d-inline-block"><b>DEX</b> ${monster.dexterity} (${getMod(monster.dexterity)})</p>
+                    <p class="card-text d-inline-block"><b>CON</b> ${monster.constitution} (${getMod(monster.constitution)})</p>
+                    <p class="card-text d-inline-block"><b>INT</b> ${monster.intelligence} (${getMod(monster.intelligence)})</p>
+                    <p class="card-text d-inline-block"><b>WIS</b> ${monster.wisdom} (${getMod(monster.wisdom)})</p>
+                    <p class="card-text d-inline-block"><b>CHA</b> ${monster.charisma} (${getMod(monster.charisma)})</p>
                     <p class="card-text"><b>Saves</b> ${getSaves([monster.strength_save, monster.dexterity_save, monster.constitution_save, monster.intelligence_save, monster.wisdom_save, monster.charisma_save])}</p>
                     <p class="card-text"><b>Senses</b> ${monster.senses}</p>
                     ${Object.keys(monster.skills).length ? `<p class="card-text"><b>Skills</b> ${getSkills(monster.skills)}</p>` : ''}
