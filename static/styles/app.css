@@ -328,7 +328,7 @@ a {
         min-height: fit-content;
     }
     .hp-block {
-        display: inline;
-        margin-right: 3px;
+        display: inline-block;
+        margin-right: 5px;
     }
 }

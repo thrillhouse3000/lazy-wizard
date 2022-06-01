@@ -32,9 +32,9 @@ function generateHtml(monster, i) {
                     <p class="card-text d-inline"><b>INT</b> ${monster.intelligence} (${getMod(monster.intelligence)})</p>
                     <p class="card-text d-inline"><b>WIS</b> ${monster.wisdom} (${getMod(monster.wisdom)})</p>
                     <p class="card-text d-inline"><b>CHA</b> ${monster.charisma} (${getMod(monster.charisma)})</p>
-                    <p class="card-text"><b>Saves:</b> ${getSaves([monster.strength_save, monster.dexterity_save, monster.constitution_save, monster.intelligence_save, monster.wisdom_save, monster.charisma_save])}</p>
+                    <p class="card-text"><b>Saves</b> ${getSaves([monster.strength_save, monster.dexterity_save, monster.constitution_save, monster.intelligence_save, monster.wisdom_save, monster.charisma_save])}</p>
                     <p class="card-text"><b>Senses</b> ${monster.senses}</p>
-                    ${Object.keys(monster.skills).length ? `<p class="card-text"><b>Skills:</b> ${getSkills(monster.skills)}</p>` : ''}
+                    ${Object.keys(monster.skills).length ? `<p class="card-text"><b>Skills</b> ${getSkills(monster.skills)}</p>` : ''}
                     ${monster.damage_vulnerabilities ? `<p class="card-text"><b>Damage Vulnerabilities</b> ${monster.damage_vulnerabilities}</p>` : ''}
                     ${monster.damage_resistances ? `<p class="card-text"><b>Damage Resistances</b> ${monster.damage_resistances}</p>` : ''}
                     ${monster.damage_immunities ? `<p class="card-text"><b>Damage Immunities</b> ${monster.damage_immunities}</p>` : ''}
