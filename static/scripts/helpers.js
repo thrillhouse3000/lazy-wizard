@@ -4,7 +4,7 @@ function generateHtml(monster, i) {
         <div class="row" id='title-row'>
             <div class="col-5">
                 <div class="card-body">
-                    <h6 class="card-text d-inline" id='monster-name-${i}' data-id='${i}'><b>${monster.name}</b></h6>
+                    <h6 class="card-text d-inline" id='monster-name-${i}' data-id='${i}'><b><span class='first-letter'>${monster.name[0]}</span>${monster.name.substring(1)}</b></h6>
                     <span id='monster-multiplier-${i}'></span>
                 </div>
             </div>

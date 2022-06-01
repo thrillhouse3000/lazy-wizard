@@ -22,8 +22,6 @@ h5 {
     text-shadow: none;
 }
 
-
-
 input {
     text-align: center;
     background-color: rgba(255, 255, 255, 0.8);
@@ -128,8 +126,15 @@ a {
     text-align: center;
 }
 
+
 /* Monster Section styles */
 
+
+.first-letter {
+    font-family: 'Fleur De Leah';
+    font-size: 3rem;
+    margin-right: 3px;
+}
 
 #title-row {
     border-bottom: 3px solid rgb(154, 24, 24);
@@ -146,6 +151,12 @@ a {
     margin-bottom: 0px;
 }
 
+.monster-header {
+    text-shadow: 0px 4px 3px rgba(0,0,0,0.7),
+                0px 8px 13px rgba(0,0,0,0.4),
+                0px 18px 23px rgba(0,0,0,0.3);
+}
+
 .popover {
     font-size: normal;
     font-family: 'IM Fell English SC', serif;
@@ -158,10 +169,6 @@ a {
 .popover-body {
     max-height: 10rem;
     overflow: auto;
-}
-
-.monster-header {
-    text-shadow: none;
 }
 
 .monster-card {
